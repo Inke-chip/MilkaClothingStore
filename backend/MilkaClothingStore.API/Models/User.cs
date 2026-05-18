@@ -27,8 +27,15 @@ namespace MilkaClothingStore.API.Models
         public string LastName { get; set; } = string.Empty;
 
         [MaxLength(20)]
-        public string? Phone { get; set; } // Знак ? означает, что поле может быть NULL
+        public string? Phone { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        // Связь с таблицей Roles (Внешний ключ)
+        [Required]
+        public int RoleId { get; set; }
+
+        [ForeignKey("RoleId")]
+        public Role? Role { get; set; } // Навигационное свойство
     }
 }
