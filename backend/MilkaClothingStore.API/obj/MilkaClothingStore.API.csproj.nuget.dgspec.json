@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj": {}
+    "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj": {
+    "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj",
+        "projectUniqueName": "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj",
         "projectName": "MilkaClothingStore.API",
-        "projectPath": "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj",
+        "projectPath": "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj",
         "packagesPath": "C:\\Users\\Yana\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\obj\\",
+        "outputPath": "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -51,9 +51,33 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.2.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[9.0.14, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[9.0.2, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[9.0.0-rc.2, )"
             }
           },
           "imports": [
