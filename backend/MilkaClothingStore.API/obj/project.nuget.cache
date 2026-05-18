@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "D/JzCaSZ3PM=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Yana\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.14\\microsoft.aspnetcore.openapi.9.0.14.nupkg.sha512",
+    "C:\\Users\\Yana\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
