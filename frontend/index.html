@@ -3,69 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Milka Clothing Store | Каталог</title>
+    <title>MILKA.universe | Галактическая Одежда</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <header class="navbar">
-        <div class="logo">MILKA<span>.store</span></div>
-        
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Поиск любимой одежды...">
-            <button id="searchBtn"><i class="fas fa-search"></i></button>
-        </div>
+    <div class="space-bg">
+        <div class="stars"></div>
+        <div class="nebula"></div>
+    </div>
 
-        <div class="nav-icons">
-            <a href="#"><i class="fas fa-user"></i></a>
-            <a href="#"><i class="fas fa-shopping-bag"></i></a>
+    <header class="navbar">
+        <div class="logo" data-target="view-home">MILKA<span>.universe</span></div>
+        
+        <nav class="nav-links">
+            <a href="#" class="nav-item active" data-target="view-home">Главная</a>
+            <a href="#" class="nav-item" data-target="view-catalog">Каталог</a>
+            <a href="#" class="nav-item" data-target="view-cart"><i class="fas fa-shopping-bag"></i> <span id="cart-count">0</span></a>
+            <a href="#" class="nav-item" data-target="view-auth" id="auth-nav-btn"><i class="fas fa-user-astronaut"></i> Вход</a>
+        </nav>
+
+        <div class="role-selector">
+            <button class="role-btn" data-target="view-admin"><i class="fas fa-user-shield"></i> Админ</button>
+            <button class="role-btn" data-target="view-seller"><i class="fas fa-warehouse"></i> Склад</button>
+            <button class="role-btn" data-target="view-delivery"><i class="fas fa-rocket"></i> Курьер</button>
         </div>
     </header>
 
-    <main class="catalog-container">
-        
-        <aside class="sidebar-filters">
-            <h3>Фильтры</h3>
-            
-            <div class="filter-group">
-                <h4>Категории</h4>
-                <select id="categoryFilter">
-                    <option value="">Все категории</option>
-                    <option value="Худи и Свитшоты">Худи и Свитшоты</option>
-                    <option value="Штаны и Джинсы">Штаны и Джинсы</option>
-                </select>
-            </div>
+    <main class="app-container">
 
-            <div class="filter-group">
-                <h4>Размер</h4>
-                <div class="size-selector" id="sizeFilter">
-                    <button class="size-btn" data-size="S">S</button>
-                    <button class="size-btn" data-size="M">M</button>
-                    <button class="size-btn" data-size="L">L</button>
+        <section id="view-home" class="screen-view active">
+            <div class="hero-section">
+                <div class="hero-title-wrapper">
+                    <h1 class="hero-title">НЕОТРАЗИМА</h1>
+                    <h1 class="hero-title asymmetric">КАК ЗВЕЗДА</h1>
                 </div>
-            </div>
-
-            <div class="filter-group">
-                <h4>Цвет</h4>
-                <select id="colorFilter">
-                    <option value="">Все цвета</option>
-                    <option value="Милка-Фиолетовый">Милка-Фиолетовый</option>
-                    <option value="Угольно-Чёрный">Угольно-Чёрный</option>
-                </select>
-            </div>
-
-            <button id="resetFiltersBtn" class="reset-btn">Сбросить фильтры</button>
-        </aside>
-
-        <section class="products-section">
-            <div class="products-grid" id="productsGrid">
-                <div class="loading">Загрузка неоновой коллекции...</div>
+                <p class="hero-subtitle">Одежда, заряженная гравитацией Млечного Пути. Твой новый межгалактический стиль уже здесь.</p>
+                <button class="cta-btn" data-target="view-catalog">Открыть каталог <i class="fas fa-space-shuttle"></i></button>
             </div>
         </section>
 
-    </main>
+        <section id="view-catalog" class="screen-view">
+            <div class="catalog-layout">
+                <aside class="sidebar-filters">
+                    <h3>Фильтрация</h3>
+                    <div class="filter-group">
+                        <label>Поиск</label>
+                        <div class="search-wrapper">
+                            <input type="text" id="searchInput" placeholder="Ключевое слово...">
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Категория</label>
+                        <select id="categoryFilter">
+                            <option value="">Все туманности</option>
+                            <option value="Худи и Свитшоты">Худи и Свитшоты</option>
+                            <option value="Штаны и Джинсы">Штаны и Джинсы</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Размер звездной пыли</label>
+                        <div class="size-selector" id="sizeFilter">
+                            <button class="size-btn" data-size="S">S</button>
+                            <button class="size-btn" data-size="M">M</button>
+                            <button class="size-btn" data-size="L">L</button>
+                        </div>
+                    </div>
+                    <div class="filter-group">
+                        <label>Цветовой спектр</label>
+                        <select id="colorFilter">
+                            <option value="">Все спектры</option>
+                            <option value="Милка-Фиолетовый">Милка-Фиолетовый</option>
+                            <option value="Угольно-Чёрный">Угольно-Чёрный</option>
+                        </select>
+                    </div>
+                    <button id="resetFiltersBtn" class="reset-btn">Сбросить координаты</button>
+                </aside>
 
-    <script src="app.js"></script>
-</body>
-</html>
+                <div class="products-grid-wrapper">
+                    <div class="products-grid" id="productsGrid"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-product-detail" class="screen-view">
+            <div class="detail-container" id="productDetailContent">
+                </div>
+        </section>
+
+        <section id="view-cart" class="screen-view">
+            <div class="cart-layout">
+                <div class="cart-items-container" id="cartItemsList">
+                    </div>
+                <div class="cart-summary-panel">
+                    <h3>Орбитальный Счёт</h3>
+                    <div class="summary-row"><span>Товары:</span><span id="cart-summary-items">0 шт.</span></div>
+                    <div class="summary-row total"><span>Итого:</span><span id="cart-summary-total">0 ₽</span></div>
+                    <button class="checkout-btn" data-target="view-checkout">Перейти к телепортации заказа <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-checkout" class="screen-view">
+            <div class="checkout-container">
+                <div class="checkout-form-panel">
+                    <h2>Оформление гиперпространственного заказа</h2>
+                    <div class="form-group"><label>Координаты доставки (Адрес)</label><input type="text" id="checkout-address" placeholder="Галактика Земля, ул. Лавандовая..."></div>
+                    <div class="form-group"><label>Способ космической оплаты</label>
+                        <div class="payment-mock-grid">
+                            <label class="pay-option"><input type="radio" name="payment" value="quantum" checked> <span>Квантовый крипто-перевод</span></label>
+                            <label class="pay-option"><input type="radio" name="payment" value="stars"> <span>Звездные кредиты</span></label>
+                        </div>
+                    </div>
+                    <button class="confirm-order-btn" id="placeOrderBtn">Подтвердить и запустить сборку</button>
+                </div>
+                <div class="checkout-receipt-panel" id="orderConfirmation
