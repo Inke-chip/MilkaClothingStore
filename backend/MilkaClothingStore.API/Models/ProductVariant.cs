@@ -7,9 +7,9 @@ namespace MilkaClothingStore.API.Models
     public class ProductVariant
     {
         [Key]
+        [Column("VariantId")] // Привязываем наше свойство к реальному первичному ключу VariantId!
         public int ProductVariantId { get; set; }
 
-        // Добавляем SKU, так как он обязателен в твоей БД!
         [Required]
         [MaxLength(50)]
         public string SKU { get; set; } = string.Empty;
@@ -25,6 +25,10 @@ namespace MilkaClothingStore.API.Models
 
         [Required]
         public int StockQuantity { get; set; }
+
+    
+        [Column("PriceAdjustment", TypeName = "decimal(18,2)")]
+        public decimal? PriceAdjustment { get; set; }
 
         [ForeignKey("ProductId")]
         public Product? Product { get; set; }
