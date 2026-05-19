@@ -6,6 +6,7 @@ using MilkaClothingStore.API.DTOs;
 using MilkaClothingStore.API.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace MilkaClothingStore.API.Controllers
@@ -25,26 +26,22 @@ namespace MilkaClothingStore.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            // Валидация модели срабатывает автоматически благодаря атрибуту [ApiController]
             try
             {
-                // 1. Проверяем уникальность Email
                 if (await _context.Users.AnyAsync(u => u.Email == dto.Email))
                 {
                     return BadRequest(new { message = "Пользователь с таким Email уже зарегистрирован" });
                 }
 
-                // 2. Проверяем, существует ли указанная роль в БД
+                // Проверяем существование роли
                 var roleExists = await _context.Roles.AnyAsync(r => r.RoleId == dto.RoleId);
                 if (!roleExists)
                 {
-                    return BadRequest(new { message = $"Указанная роль с ID {dto.RoleId} не существует в системе" });
+                    return BadRequest(new { message = $"Указанная роль с ID {dto.RoleId} не существует" });
                 }
 
-                // 3. Хэшируем пароль
                 string passwordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
-                // 4. Создаем сущность
                 var newUser = new User
                 {
                     Email = dto.Email.ToLower().Trim(),
@@ -52,23 +49,28 @@ namespace MilkaClothingStore.API.Controllers
                     FirstName = dto.FirstName,
                     LastName = dto.LastName,
                     Phone = dto.Phone,
-                    RoleId = dto.RoleId,
                     CreatedAt = DateTime.UtcNow
                 };
 
+                // 1. Сохраняем пользователя, чтобы SQL Server сгенерировал ему UserId
                 _context.Users.Add(newUser);
+                await _context.SaveChangesAsync();
+
+                // 2. Создаем запись в промежуточной таблице связей UserRoles
+                var userRole = new UserRole
+                {
+                    UserId = newUser.UserId,
+                    RoleId = dto.RoleId
+                };
+
+                _context.UserRoles.Add(userRole);
                 await _context.SaveChangesAsync();
 
                 return Ok(new { message = "Регистрация прошла успешно!" });
             }
-            catch (DbUpdateException ex) when (ex.InnerException is SqlException)
-            {
-                // Ловим критические ошибки самого SQL Server
-                return StatusCode(500, new { message = "Ошибка базы данных при сохранении пользователя", details = ex.InnerException.Message });
-            }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Произошла внутренняя ошибка сервера", details = ex.Message });
+                return StatusCode(500, new { message = "Ошибка при регистрации", details = ex.Message });
             }
         }
 
@@ -78,25 +80,30 @@ namespace MilkaClothingStore.API.Controllers
         {
             try
             {
-                // 1. Ищем пользователя в БД и сразу «подтягиваем» его роль через Include
+                // 1. Ищем пользователя по Email
                 var user = await _context.Users
-                    .Include(u => u.Role)
                     .FirstOrDefaultAsync(u => u.Email == dto.Email.ToLower().Trim());
 
-                // 2. Если пользователь не найден — возвращаем 401 Unauthorized
                 if (user == null)
                 {
                     return Unauthorized(new { message = "Неверный Email или пароль" });
                 }
 
-                // 3. Проверяем хэш пароля с помощью BCrypt
+                // 2. Проверяем хэш пароля
                 bool isPasswordValid = BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash);
                 if (!isPasswordValid)
                 {
                     return Unauthorized(new { message = "Неверный Email или пароль" });
                 }
 
-                // 4. Формируем успешный ответ (статус 200) с данными пользователя и его ролью
+                // 3. Достаем роль пользователя через промежуточную таблицу UserRoles
+                var userRoleSetting = await _context.UserRoles
+                    .Include(ur => ur.Role)
+                    .FirstOrDefaultAsync(ur => ur.UserId == user.UserId);
+
+                string roleName = userRoleSetting?.Role?.RoleName ?? "Customer";
+
+                // 4. Формируем успешный ответ
                 var response = new
                 {
                     message = "Вход успешно выполнен",
@@ -108,7 +115,7 @@ namespace MilkaClothingStore.API.Controllers
                         user.LastName,
                         user.Phone,
                         user.CreatedAt,
-                        Role = user.Role != null ? user.Role.RoleName : "No Role"
+                        Role = roleName
                     }
                 };
 
@@ -116,16 +123,8 @@ namespace MilkaClothingStore.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Произошла непредвиденная ошибка при входе", details = ex.Message });
+                return StatusCode(500, new { message = "Ошибка при входе", details = ex.Message });
             }
-        }
-
-        // GET: api/users (Дополнительный метод для контроля)
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
-        {
-            var users = await _context.Users.Include(u => u.Role).ToListAsync();
-            return Ok(users);
         }
     }
 }
