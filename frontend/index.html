@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <div class="space-bg">
+    <div class="space-bg" id="cosmicBg">
         <div class="stars"></div>
         <div class="nebula"></div>
     </div>
@@ -62,7 +62,7 @@
                         </select>
                     </div>
                     <div class="filter-group">
-                        <label>Размер звездной пыли</label>
+                        <label>Размер</label>
                         <div class="size-selector" id="sizeFilter">
                             <button class="size-btn" data-size="S">S</button>
                             <button class="size-btn" data-size="M">M</button>
@@ -87,7 +87,8 @@
         </section>
 
         <section id="view-product-detail" class="screen-view">
-            <div class="detail-container" id="productDetailContent"></div>
+            <div class="detail-container" id="productDetailContent">
+                </div>
         </section>
 
         <section id="view-cart" class="screen-view">
@@ -125,19 +126,73 @@
         </section>
 
         <section id="view-auth" class="screen-view">
-            <div class="auth-box">
-                <div class="auth-tabs"><button class="auth-tab active" id="tab-login">Вход на орбиту</button><button class="auth-tab" id="tab-register">Регистрация скафандра</button></div>
-                <form id="auth-form" class="auth-form-content">
-                    <div class="form-group"><label>Идентификатор (Email)</label><input type="email" id="auth-email" required placeholder="astronaut@milka.space"></div>
-                    <div class="form-group"><label>Квантовый пароль</label><input type="password" id="auth-pass" required placeholder="••••••••"></div>
-                    <button type="submit" class="auth-submit-btn">Запустить протокол</button>
-                </form>
+            <div class="auth-glass-card" id="authCard">
+                <div class="auth-icon-wrapper">
+                    <i class="fas fa-circle-notch fa-spin-slow"></i>
+                </div>
+                
+                <div id="auth-login-block">
+                    <h2 class="auth-glass-title">Welcome back!</h2>
+                    <p class="auth-glass-subtitle">Sign in to access your guided meditations, daily practices, and personal journey</p>
+                    
+                    <form id="login-form">
+                        <div class="glass-input-group">
+                            <label>Email</label>
+                            <input type="text" id="login-email" placeholder="Enter your email" required autocomplete="off">
+                        </div>
+                        <div class="glass-input-group">
+                            <label>Password</label>
+                            <div class="password-wrapper">
+                                <input type="password" id="login-pass" placeholder="••••••" required>
+                                <i class="far fa-eye toggle-password"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="glass-form-options">
+                            <label class="glass-checkbox-label">
+                                <input type="checkbox" checked>
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="glass-link">Forgot password?</a>
+                        </div>
+                        
+                        <button type="submit" class="glass-submit-btn">Log In</button>
+                    </form>
+                    
+                    <div class="glass-divider"><span>Or</span></div>
+                    
+                    <button class="glass-oauth-btn">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
+                        Sign In with Google
+                    </button>
+                    
+                    <p class="glass-footer-text">Don't have an account? <a href="#" id="goToRegisterBtn">Sign Up</a></p>
+                </div>
+
+                <div id="auth-register-block" style="display: none;">
+                    <h2 class="auth-glass-title">Create account</h2>
+                    <p class="auth-glass-subtitle">Join the Milka.universe and explore the cosmic collection</p>
+                    
+                    <form id="register-form">
+                        <div class="glass-input-group">
+                            <label>Email Address</label>
+                            <input type="email" placeholder="Enter your email" required autocomplete="off">
+                        </div>
+                        <div class="glass-input-group">
+                            <label>Create Password</label>
+                            <input type="password" placeholder="Minimum 6 characters" required>
+                        </div>
+                        <button type="submit" class="glass-submit-btn">Sign Up</button>
+                    </form>
+                    
+                    <p class="glass-footer-text">Already have an astronaut pass? <a href="#" id="goToLoginBtn">Log In</a></p>
+                </div>
             </div>
         </section>
 
         <section id="view-admin" class="screen-view">
             <div class="admin-layout">
-                <header class="admin-header"><h2>Панель Архитектора Галактики (Admin)</h2></header>
+                <header class="admin-header"><h2>Панель Архитектора Галактики (Администратор)</h2></header>
                 <div class="admin-grid">
                     <div class="admin-card">
                         <h3>Управление Сверхновыми (Товары)</h3>
@@ -156,15 +211,34 @@
 
         <section id="view-seller" class="screen-view">
             <div class="admin-layout">
-                <header class="admin-header"><h2>Центр Комплектации Звездного Инвентаря</h2></header>
+                <header class="admin-header"><h2>Центр Комплектации Звездного Инвентаря (Сборщик)</h2></header>
                 <div class="seller-orders-grid" id="sellerOrdersGrid"></div>
             </div>
         </section>
 
         <section id="view-delivery" class="screen-view">
             <div class="admin-layout">
-                <header class="admin-header"><h2>Навигатор Межзвездных Курьеров</h2></header>
+                <header class="admin-header"><h2>Навигатор Межзвездных Курьеров (Доставщик)</h2></header>
                 <div class="courier-container" id="courierDeliveries"></div>
+            </div>
+        </section>
+
+        <section id="view-accountant" class="screen-view">
+            <div class="admin-layout">
+                <header class="admin-header"><h2>Финансовый Департамент Млечного Пути (Бухгалтер)</h2></header>
+                <div class="admin-grid">
+                    <div class="admin-card" style="grid-column: 1 / -1;">
+                        <h3>Баланс Квантовых Кредитов и Налоги</h3>
+                        <div style="font-size: 32px; color: var(--neon-cyan); margin: 20px 0; font-weight: 800;">7,420,000 ₽</div>
+                        <table class="admin-table">
+                            <thead><tr><th>Период</th><th>Оборот галактики</th><th>Чистая прибыль</th><th>Статус отчета</th></tr></thead>
+                            <tbody>
+                                <tr><td>Май 2026</td><td>4,500,000 ₽</td><td>3,100,000 ₽</td><td><span class="status-badge delivery">Сдан</span></td></tr>
+                                <tr><td>Апрель 2026</td><td>3,800,000 ₽</td><td>2,450,000 ₽</td><td><span class="status-badge delivery">Сдан</span></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </section>
 
