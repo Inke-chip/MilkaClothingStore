@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj": {}
+    "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj": {
+    "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj",
+        "projectUniqueName": "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj",
         "projectName": "MilkaClothingStore.API",
-        "projectPath": "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj",
+        "projectPath": "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\MilkaClothingStore.API.csproj",
         "packagesPath": "C:\\Users\\Yana\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\obj\\",
+        "outputPath": "C:\\Users\\Yana\\MilkaClothingStore\\backend\\MilkaClothingStore.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -74,10 +74,6 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.2, )"
-            },
-            "Swashbuckle.AspNetCore": {
-              "target": "Package",
-              "version": "[9.0.0-rc.2, )"
             }
           },
           "imports": [

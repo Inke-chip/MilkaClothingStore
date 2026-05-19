@@ -1022,15 +1022,6 @@
           "buildTransitive/Mono.TextTemplating.targets": {}
         }
       },
-      "Swashbuckle.AspNetCore/9.0.0": {
-        "type": "package",
-        "build": {
-          "build/Swashbuckle.AspNetCore.props": {}
-        },
-        "buildMultiTargeting": {
-          "buildMultiTargeting/Swashbuckle.AspNetCore.props": {}
-        }
-      },
       "System.ClientModel/1.0.0": {
         "type": "package",
         "dependencies": {
@@ -3622,20 +3613,6 @@
         "readme.md"
       ]
     },
-    "Swashbuckle.AspNetCore/9.0.0": {
-      "sha512": "y6Q+U2Y6lrY0W8jQ97zSdFWuQioxXx4zbTLVFQBh9jcxkvizo2Y4pRNK0xx3VsYy78qQjSJNsarxAxr4VQqUHw==",
-      "type": "package",
-      "path": "swashbuckle.aspnetcore/9.0.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "build/Swashbuckle.AspNetCore.props",
-        "buildMultiTargeting/Swashbuckle.AspNetCore.props",
-        "docs/package-readme.md",
-        "swashbuckle.aspnetcore.9.0.0.nupkg.sha512",
-        "swashbuckle.aspnetcore.nuspec"
-      ]
-    },
     "System.ClientModel/1.0.0": {
       "sha512": "I3CVkvxeqFYjIVEP59DnjbeoGNfo/+SZrCLpRz2v/g0gpCHaEMPtWSY0s9k/7jR1rAsLNg2z2u1JRB76tPjnIw==",
       "type": "package",
@@ -4829,8 +4806,7 @@
       "Microsoft.AspNetCore.OpenApi >= 9.0.14",
       "Microsoft.EntityFrameworkCore.Design >= 9.0.2",
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.2",
-      "Microsoft.EntityFrameworkCore.Tools >= 9.0.2",
-      "Swashbuckle.AspNetCore >= 9.0.0-rc.2"
+      "Microsoft.EntityFrameworkCore.Tools >= 9.0.2"
     ]
   },
   "packageFolders": {
@@ -4907,10 +4883,6 @@
             "suppressParent": "All",
             "target": "Package",
             "version": "[9.0.2, )"
-          },
-          "Swashbuckle.AspNetCore": {
-            "target": "Package",
-            "version": "[9.0.0-rc.2, )"
           }
         },
         "imports": [
@@ -4935,17 +4907,5 @@
         "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.312/PortableRuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1603",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "MilkaClothingStore.API depends on Swashbuckle.AspNetCore (>= 9.0.0-rc.2) but Swashbuckle.AspNetCore 9.0.0-rc.2 was not found. Swashbuckle.AspNetCore 9.0.0 was resolved instead.",
-      "libraryId": "Swashbuckle.AspNetCore",
-      "targetGraphs": [
-        "net9.0"
-      ]
-    }
-  ]
+  }
 }

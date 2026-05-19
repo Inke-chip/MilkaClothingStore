@@ -1,0 +1,35 @@
+### СЦЕНАРИЙ 1: Регистрация нового пользователя (Например, Администратор или Покупатель)
+# Важно: Убедись, что в твоей таблице Roles есть запись с RoleId = 1 (например, Admin)
+POST http://localhost:5008/api/users/register
+Content-Type: application/json
+
+{
+  "email": "yana_developer@milka.com",
+  "password": "securePass777",
+  "firstName": "Яна",
+  "lastName": "Лид",
+  "phone": "+79998887766",
+  "roleId": 1
+}
+
+###
+
+### СЦЕНАРИЙ 2: Успешный Вход (Login)
+POST http://localhost:5008/api/users/login
+Content-Type: application/json
+
+{
+  "email": "yana_developer@milka.com",
+  "password": "securePass777"
+}
+
+###
+
+### СЦЕНАРИЙ 3: Ошибка входа (Неверный пароль)
+POST http://localhost:5008/api/users/login
+Content-Type: application/json
+
+{
+  "email": "yana_developer@milka.com",
+  "password": "wrongPasswordHere"
+}
