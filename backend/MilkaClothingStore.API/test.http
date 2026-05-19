@@ -33,3 +33,14 @@ Content-Type: application/json
   "email": "yana_developer@milka.com",
   "password": "wrongPasswordHere"
 }
+### 1. Проверка фильтра по категории (должно вернуть наше худи)
+GET http://localhost:5008/api/products?category=Худи и Свитшоты
+
+### 2. Проверка пустой категории (должно вернуть пустой список [], так как штанов мы еще не добавляли)
+GET http://localhost:5008/api/products?category=Штаны и Джинсы
+
+### 3. Фильтр по размеру (вернет худи, так как размеры S и M у нас есть на складе)
+GET http://localhost:5008/api/products?size=M
+
+### 4. Фильтр по цвету и размеру одновременно (Угольно-Чёрный в размере M у нас есть!)
+GET http://localhost:5008/api/products?color=Угольно-Чёрный&size=M
