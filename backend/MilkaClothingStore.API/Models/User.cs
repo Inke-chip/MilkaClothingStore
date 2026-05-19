@@ -30,12 +30,5 @@ namespace MilkaClothingStore.API.Models
         public string? Phone { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-        // Связь с таблицей Roles (Внешний ключ)
-        [Required]
-        public int RoleId { get; set; }
-
-        [ForeignKey("RoleId")]
-        public Role? Role { get; set; } // Навигационное свойство
     }
 }
