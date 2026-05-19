@@ -7,10 +7,10 @@
 }
 
 :root {
-    --bg-dark: #070509;       /* Ещё более глубокий, слегка фиолетовый тёмный фон */
-    --bg-card: #140f19;       /* Тёмный фон для карточек с фиолетовым отливом */
+    --bg-dark: #070509;       /* Глубокий тёмный фон с фиолетовым отливом */
+    --bg-card: #140f19;       /* Фон для карточек и панелей */
     --purple-neon: #9202f2;   /* Твой сочный неоновый фиолетовый */
-    --lavender-light: #ce99f2;/* Твой нежный лавандовый для акцентов и текста */
+    --lavender-light: #ce99f2;/* Твой нежный лавандовый для акцентов */
     --teal-glow: #00b3b0;     /* Твой сочный тиловый */
     --neon-cyan: #08ffe2;     /* Твой ярко-бирюзовый неон */
     --text-white: #ffffff;
@@ -30,23 +30,38 @@ body {
     align-items: center;
     padding: 20px 50px;
     background-color: rgba(7, 5, 9, 0.95);
-    border-bottom: 2px solid var(--purple-neon); /* Заменили синий на неоновый фиолетовый */
+    border-bottom: 2px solid var(--purple-neon);
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 4px 20px rgba(146, 2, 242, 0.15); /* Добавили легкое фиолетовое свечение шапке */
+    box-shadow: 0 4px 20px rgba(146, 2, 242, 0.2);
 }
 
-/* ... (все остальные стили ниже остаются прежними, но давай обновим бордеры и кнопки, где был синий) ... */
+.logo {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--text-white);
+}
+
+.logo span {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px var(--neon-cyan);
+}
 
 /* Поисковая строка */
 .search-box {
     display: flex;
     width: 40%;
-    border: 1px solid var(--purple-neon); /* Бордер стал фиолетовым */
+    border: 1px solid var(--purple-neon);
     border-radius: 4px;
     overflow: hidden;
     transition: 0.3s;
+}
+
+.search-box:focus-within {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(8, 255, 226, 0.3);
 }
 
 .search-box input {
@@ -59,12 +74,36 @@ body {
 }
 
 .search-box button {
-    background: var(--purple-neon); /* Кнопка поиска стала фиолетовой */
+    background: var(--purple-neon);
     border: none;
     color: var(--neon-cyan);
     padding: 0 20px;
     cursor: pointer;
     transition: 0.3s;
+}
+
+.search-box button:hover {
+    background: var(--teal-glow);
+    color: var(--bg-dark);
+}
+
+.nav-icons a {
+    color: var(--text-gray);
+    font-size: 20px;
+    margin-left: 25px;
+    transition: 0.3s;
+}
+
+.nav-icons a:hover {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+/* Макет каталога */
+.catalog-container {
+    display: flex;
+    padding: 40px 50px;
+    gap: 40px;
 }
 
 /* Боковая панель фильтров */
@@ -74,7 +113,7 @@ body {
     background: var(--bg-card);
     padding: 25px;
     border-radius: 8px;
-    border: 1px solid rgba(146, 2, 242, 0.3); /* Фиолетовая тонкая рамка */
+    border: 1px solid rgba(146, 2, 242, 0.3);
     height: fit-content;
 }
 
@@ -82,23 +121,38 @@ body {
     margin-bottom: 25px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: var(--lavender-light); /* Заголовок фильтров стал нежно-лавандовым */
+    color: var(--lavender-light);
+}
+
+.filter-group {
+    margin-bottom: 25px;
+}
+
+.filter-group h4 {
+    margin-bottom: 10px;
+    color: var(--text-gray);
+    font-size: 14px;
 }
 
 .filter-group select {
     width: 100%;
     padding: 10px;
     background: var(--bg-dark);
-    border: 1px solid var(--purple-neon); /* Рамка селектора фиолетовая */
+    border: 1px solid var(--purple-neon);
     color: var(--text-white);
     border-radius: 4px;
     outline: none;
 }
 
 /* Кнопки размеров */
+.size-selector {
+    display: flex;
+    gap: 10px;
+}
+
 .size-btn {
     background: var(--bg-dark);
-    border: 1px solid var(--purple-neon); /* Рамка кнопок фиолетовая */
+    border: 1px solid var(--purple-neon);
     color: var(--text-white);
     padding: 8px 12px;
     cursor: pointer;
@@ -106,12 +160,46 @@ body {
     transition: 0.3s;
 }
 
+.size-btn.active, .size-btn:hover {
+    border-color: var(--neon-cyan);
+    color: var(--neon-cyan);
+    background: rgba(8, 255, 226, 0.1);
+}
+
+.reset-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px solid var(--teal-glow);
+    color: var(--teal-glow);
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.reset-btn:hover {
+    background: var(--teal-glow);
+    color: var(--bg-dark);
+}
+
+/* Сетка товаров */
+.products-section {
+    flex-grow: 1;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
 /* Квадратная карточка товара */
 .product-card {
     background: var(--bg-card);
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid rgba(146, 2, 242, 0.2); /* Фиолетовая рамка карточки */
+    border: 1px solid rgba(146, 2, 242, 0.2);
     transition: transform 0.3s, box-shadow 0.3s;
     display: flex;
     flex-direction: column;
@@ -120,11 +208,98 @@ body {
 .product-card:hover {
     transform: translateY(-5px);
     border-color: var(--neon-cyan);
-    box-shadow: 0 5px 25px rgba(146, 2, 242, 0.4); /* При наведении карточка светится фиолетовым неоном! */
+    box-shadow: 0 5px 25px rgba(146, 2, 242, 0.4);
+}
+
+/* Картинка-квадрат */
+.image-container {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #000;
+    position: relative;
+    overflow: hidden;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.product-card:hover .image-container img {
+    transform: scale(1.05);
+}
+
+/* Информация внутри карточки */
+.product-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.product-category {
+    font-size: 12px;
+    color: var(--teal-glow);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.product-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--text-white);
+}
+
+.product-details {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+/* Контейнер для кружочков цветов */
+.product-colors {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+/* Стили для КРУГА цвета */
+.color-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative;
+}
+
+.color-circle:hover {
+    transform: scale(1.2);
+    border-color: var(--text-white);
+}
+
+/* Мета-блок внизу карточки */
+.product-meta {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.product-price {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--neon-cyan);
 }
 
 .add-to-cart-btn {
-    background: var(--purple-neon); /* Кнопка корзины стала неоново-фиолетовой */
+    background: var(--purple-neon);
     border: none;
     color: var(--text-white);
     width: 40px;
@@ -135,4 +310,19 @@ body {
     align-items: center;
     justify-content: center;
     transition: 0.3s;
+}
+
+.add-to-cart-btn:hover {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.loading {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 50px;
+    font-size: 18px;
+    color: var(--text-gray);
+    letter-spacing: 1px;
 }

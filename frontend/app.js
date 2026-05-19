@@ -1,7 +1,5 @@
-// Адрес нашего C# ASP.NET бэкенда
 const API_URL = 'http://localhost:5008/api/products';
 
-// Состояние фильтров (то, что выбрал пользователь)
 let currentFilters = {
     category: '',
     color: '',
@@ -9,26 +7,29 @@ let currentFilters = {
     search: ''
 };
 
-// Функция загрузки товаров с бэкенда
+// Карта цветов: связываем названия из базы данных с CSS цветами
+const colorMap = {
+    'Милка-Фиолетовый': '#9202f2',
+    'Угольно-Чёрный': '#1a1a1a',
+    'Белый': '#ffffff',
+    'Лавандовый': '#ce99f2'
+};
+
 async function loadProducts() {
     const grid = document.getElementById('productsGrid');
     grid.innerHTML = '<div class="loading">Загрузка неоновой коллекции...</div>';
 
     try {
-        // Строим URL с Query-параметрами для фильтрации и поиска
         const url = new URL(API_URL);
         if (currentFilters.category) url.searchParams.append('category', currentFilters.category);
         if (currentFilters.color) url.searchParams.append('color', currentFilters.color);
         if (currentFilters.size) url.searchParams.append('size', currentFilters.size);
         if (currentFilters.search) url.searchParams.append('search', currentFilters.search);
 
-        // Делаем запрос к API
         const response = await fetch(url);
         if (!response.ok) throw new Error('Ошибка при ответе сервера');
         
         const products = await response.json();
-
-        // Очищаем сетку
         grid.innerHTML = '';
 
         if (products.length === 0) {
@@ -36,13 +37,21 @@ async function loadProducts() {
             return;
         }
 
-        // Отрисовываем карточки товаров
         products.forEach(product => {
             const card = document.createElement('div');
             card.className = 'product-card';
 
-            // Если картинки нет, подставляем заглушку с лавандовым фоном
-            const imgUrl = product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/400/1f2833/08ffe2?text=MILKA';
+            const imgUrl = product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/400/140f19/08ffe2?text=MILKA';
+
+            // ГЕНЕРИРУЕМ КРУЖОЧКИ ЦВЕТОВ
+            let colorsHtml = '';
+            if (product.availableColors && product.availableColors.length > 0) {
+                product.availableColors.forEach(colorName => {
+                    // Ищем HEX код в нашей карте, если не нашли - ставим серый по умолчанию
+                    const hexColor = colorMap[colorName] || '#555555';
+                    colorsHtml += `<div class="color-circle" style="background-color: ${hexColor};" title="${colorName}"></div>`;
+                });
+            }
 
             card.innerHTML = `
                 <div class="image-container">
@@ -52,6 +61,11 @@ async function loadProducts() {
                     <span class="product-category">${product.category}</span>
                     <h4 class="product-name">${product.productName}</h4>
                     <p class="product-details">${product.description || 'Без описания'}</p>
+                    
+                    <div class="product-colors">
+                        ${colorsHtml}
+                    </div>
+
                     <div class="product-meta">
                         <span class="product-price">${product.price.toLocaleString('ru-RU')} ₽</span>
                         <button class="add-to-cart-btn" title="Добавить в корзину">
@@ -69,31 +83,25 @@ async function loadProducts() {
     }
 }
 
-// НАСТРОЙКА СЛУШАТЕЛЕЙ СОБЫТИЙ (Интерфейс)
+// Слушатели событий
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // 1. Фильтр категорий
     document.getElementById('categoryFilter').addEventListener('change', (e) => {
         currentFilters.category = e.target.value;
         loadProducts();
     });
 
-    // 2. Фильтр цветов
     document.getElementById('colorFilter').addEventListener('change', (e) => {
         currentFilters.color = e.target.value;
         loadProducts();
     });
 
-    // 3. Фильтр размеров (кнопки S, M, L)
     const sizeButtons = document.querySelectorAll('.size-btn');
     sizeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            // Если кнопка уже активна — сбрасываем фильтр размера
             if (btn.classList.contains('active')) {
                 btn.classList.remove('active');
                 currentFilters.size = '';
             } else {
-                // Иначе активируем текущую кнопку размера
                 sizeButtons.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentFilters.size = btn.dataset.size;
@@ -102,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4. Текстовый поиск (По кнопке или по Enter)
     const searchInput = document.getElementById('searchInput');
     const triggerSearch = () => {
         currentFilters.search = searchInput.value.trim();
@@ -114,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') triggerSearch();
     });
 
-    // 5. Кнопка сброса всех фильтров
     document.getElementById('resetFiltersBtn').addEventListener('click', () => {
         currentFilters = { category: '', color: '', size: '', search: '' };
         document.getElementById('categoryFilter').value = '';
@@ -124,6 +130,5 @@ document.addEventListener('DOMContentLoaded', () => {
         loadProducts();
     });
 
-    // Первая загрузка товаров при открытии страницы
     loadProducts();
 });
