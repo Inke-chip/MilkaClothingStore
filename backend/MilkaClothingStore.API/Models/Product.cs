@@ -11,26 +11,30 @@ namespace MilkaClothingStore.API.Models
         public int ProductId { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [Column("Name")]
+        [MaxLength(150)]
         public string ProductName { get; set; } = string.Empty;
 
-        [MaxLength(500)]
+        
         public string? Description { get; set; }
 
+
         [Required]
-        [Column(TypeName = "decimal(18,2)")] // Задаем точный тип для денег в SQL Server
+        [Column("BasePrice", TypeName = "decimal(18,2)")]
         public decimal Price { get; set; }
 
-        [MaxLength(255)]
-        public string? ImageUrl { get; set; }
+        
+        [NotMapped]
+        public string? ImageUrl { get; set; } = "default_clothing.jpg";
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool IsActive { get; set; } = true;
 
-        // Связь с таблицей Categories (Внешний ключ)
+        public DateTime? CreatedAt { get; set; }
+
         [Required]
         public int CategoryId { get; set; }
 
         [ForeignKey("CategoryId")]
-        public Category? Category { get; set; } // Навигационное свойство
+        public Category? Category { get; set; }
     }
 }

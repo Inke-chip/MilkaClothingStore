@@ -9,6 +9,11 @@ namespace MilkaClothingStore.API.Models
         [Key]
         public int ProductVariantId { get; set; }
 
+        // Добавляем SKU, так как он обязателен в твоей БД!
+        [Required]
+        [MaxLength(50)]
+        public string SKU { get; set; } = string.Empty;
+
         [Required]
         public int ProductId { get; set; }
 
@@ -19,9 +24,8 @@ namespace MilkaClothingStore.API.Models
         public int SizeId { get; set; }
 
         [Required]
-        public int StockQuantity { get; set; } // Количество данной вещи на складе
+        public int StockQuantity { get; set; }
 
-        // Навигационные свойства для удобной склейки через .Include() в контроллерах
         [ForeignKey("ProductId")]
         public Product? Product { get; set; }
 
