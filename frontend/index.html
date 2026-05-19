@@ -17,23 +17,28 @@
     <header class="navbar">
         <div class="logo" data-target="view-home">MILKA<span>.universe</span></div>
         
-        <nav class="nav-links">
-            <a href="#" class="nav-item active" data-target="view-home">Главная</a>
-            <a href="#" class="nav-item" data-target="view-catalog">Каталог</a>
-            <a href="#" class="nav-item" data-target="view-cart"><i class="fas fa-shopping-bag"></i> <span id="cart-count">0</span></a>
-            <a href="#" class="nav-item" data-target="view-auth" id="auth-nav-btn"><i class="fas fa-user-astronaut"></i> Вход</a>
-        </nav>
+        <div class="nav-right-block">
+            <div class="nav-search-box">
+                <input type="text" id="navSearchInput" placeholder="Поиск по галактике...">
+                <button id="navSearchBtn"><i class="fas fa-search"></i></button>
+            </div>
 
-        <div class="role-selector">
-            <button class="role-btn" data-target="view-admin"><i class="fas fa-user-shield"></i> Админ</button>
-            <button class="role-btn" data-target="view-seller"><i class="fas fa-warehouse"></i> Склад</button>
-            <button class="role-btn" data-target="view-delivery"><i class="fas fa-rocket"></i> Курьер</button>
+            <nav class="nav-links">
+                <a href="#" class="nav-link-item" data-target="view-home">Главная</a>
+                <a href="#" class="nav-link-item" data-target="view-catalog">Каталог</a>
+                <a href="#" class="nav-link-item" data-target="view-cart">
+                    Корзина <span id="cart-count-badge">0</span>
+                </a>
+                <a href="#" class="nav-link-item" data-target="view-auth" id="auth-nav-btn">
+                    <i class="fas fa-user-astronaut"></i> Вход
+                </a>
+            </nav>
         </div>
     </header>
 
     <main class="app-container">
 
-        <section id="view-home" class="screen-view active">
+        <section id="view-home" class="screen-view">
             <div class="hero-section">
                 <div class="hero-title-wrapper">
                     <h1 class="hero-title">НЕОТРАЗИМА</h1>
@@ -48,12 +53,6 @@
             <div class="catalog-layout">
                 <aside class="sidebar-filters">
                     <h3>Фильтрация</h3>
-                    <div class="filter-group">
-                        <label>Поиск</label>
-                        <div class="search-wrapper">
-                            <input type="text" id="searchInput" placeholder="Ключевое слово...">
-                        </div>
-                    </div>
                     <div class="filter-group">
                         <label>Категория</label>
                         <select id="categoryFilter">
@@ -88,19 +87,17 @@
         </section>
 
         <section id="view-product-detail" class="screen-view">
-            <div class="detail-container" id="productDetailContent">
-                </div>
+            <div class="detail-container" id="productDetailContent"></div>
         </section>
 
         <section id="view-cart" class="screen-view">
             <div class="cart-layout">
-                <div class="cart-items-container" id="cartItemsList">
-                    </div>
+                <div class="cart-items-container" id="cartItemsList"></div>
                 <div class="cart-summary-panel">
                     <h3>Орбитальный Счёт</h3>
                     <div class="summary-row"><span>Товары:</span><span id="cart-summary-items">0 шт.</span></div>
                     <div class="summary-row total"><span>Итого:</span><span id="cart-summary-total">0 ₽</span></div>
-                    <button class="checkout-btn" data-target="view-checkout">Перейти к телепортации заказа <i class="fas fa-arrow-right"></i></button>
+                    <button class="checkout-btn" data-target="view-checkout">Перейти к оформлению <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
         </section>
@@ -118,4 +115,61 @@
                     </div>
                     <button class="confirm-order-btn" id="placeOrderBtn">Подтвердить и запустить сборку</button>
                 </div>
-                <div class="checkout-receipt-panel" id="orderConfirmation
+                <div class="checkout-receipt-panel" id="orderConfirmationScreen" style="display:none;">
+                    <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+                    <h2>Заказ успешно сформирован!</h2>
+                    <p>Млечный путь принял вашу заявку. Код отслеживания: <strong id="generated-order-id">#ST-9942</strong></p>
+                    <button class="cta-btn" data-target="view-catalog">Вернуться в каталог</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-auth" class="screen-view">
+            <div class="auth-box">
+                <div class="auth-tabs"><button class="auth-tab active" id="tab-login">Вход на орбиту</button><button class="auth-tab" id="tab-register">Регистрация скафандра</button></div>
+                <form id="auth-form" class="auth-form-content">
+                    <div class="form-group"><label>Идентификатор (Email)</label><input type="email" id="auth-email" required placeholder="astronaut@milka.space"></div>
+                    <div class="form-group"><label>Квантовый пароль</label><input type="password" id="auth-pass" required placeholder="••••••••"></div>
+                    <button type="submit" class="auth-submit-btn">Запустить протокол</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="view-admin" class="screen-view">
+            <div class="admin-layout">
+                <header class="admin-header"><h2>Панель Архитектора Галактики (Admin)</h2></header>
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h3>Управление Сверхновыми (Товары)</h3>
+                        <table class="admin-table">
+                            <thead><tr><th>ID</th><th>Название</th><th>Цена</th><th>Действия</th></tr></thead>
+                            <tbody><tr><td>3</td><td>Оверсайз Худи Milka Classic</td><td>4500 ₽</td><td><i class="fas fa-edit"></i> <i class="fas fa-trash-alt"></i></td></tr></tbody>
+                        </table>
+                    </div>
+                    <div class="admin-card">
+                        <h3>Сводка Космических Заказов</h3>
+                        <div id="admin-orders-list"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-seller" class="screen-view">
+            <div class="admin-layout">
+                <header class="admin-header"><h2>Центр Комплектации Звездного Инвентаря</h2></header>
+                <div class="seller-orders-grid" id="sellerOrdersGrid"></div>
+            </div>
+        </section>
+
+        <section id="view-delivery" class="screen-view">
+            <div class="admin-layout">
+                <header class="admin-header"><h2>Навигатор Межзвездных Курьеров</h2></header>
+                <div class="courier-container" id="courierDeliveries"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

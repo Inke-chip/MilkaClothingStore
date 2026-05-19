@@ -1,7 +1,5 @@
-// Интеграция с локальным C# ASP.NET Core API
 const API_URL = 'http://localhost:5008/api/products';
 
-// Единое реактивное состояние всего приложения (State)
 let appState = {
     products: [],
     cart: [],
@@ -20,16 +18,19 @@ const colorMap = {
     'Лавандовый': '#ce99f2'
 };
 
-// --- ДВИЖОК МАРШРУТИЗАЦИИ (SPA ROUTER) ---
+// --- ИСПРАВЛЕННЫЙ РОУТЕР (SPA) ---
 function navigateTo(targetViewId) {
     document.querySelectorAll('.screen-view').forEach(screen => {
         screen.classList.remove('active');
     });
+    
     const activeScreen = document.getElementById(targetViewId);
-    if (activeScreen) activeScreen.classList.add('active');
+    if (activeScreen) {
+        activeScreen.classList.add('active');
+    }
 
-    // Обновляем подсветку ссылок в шапке
-    document.querySelectorAll('.nav-item, .role-btn').forEach(link => {
+    // Обновляем активный класс на ссылках в шапке
+    document.querySelectorAll('.nav-link-item').forEach(link => {
         link.classList.remove('active');
         if (link.dataset.target === targetViewId) link.classList.add('active');
     });
@@ -37,7 +38,7 @@ function navigateTo(targetViewId) {
     appState.currentView = targetViewId;
     window.scrollTo(0, 0);
 
-    // Дополнительные хуки при открытии экранов
+    // Триггеры загрузки экранов
     if (targetViewId === 'view-catalog') loadCatalog();
     if (targetViewId === 'view-cart') renderCart();
     if (targetViewId === 'view-admin') renderAdminPanel();
@@ -45,7 +46,16 @@ function navigateTo(targetViewId) {
     if (targetViewId === 'view-delivery') renderCourierPanel();
 }
 
-// --- КАТАЛОГ: СВЯЗЬ С НАШИМ C# API ---
+// --- СЕКРЕТНЫЙ КЛЮЧ ДЛЯ ПРЕПОДАВАТЕЛЯ (Вход в скрытые панели через консоль) ---
+// Чтобы открыть админку, просто напиши в консоли браузера: openPanel('admin')
+window.openPanel = function(role) {
+    if (role === 'admin') navigateTo('view-admin');
+    if (role === 'seller') navigateTo('view-seller');
+    if (role === 'delivery') navigateTo('view-delivery');
+    console.log(`Переключение на скрытый экран: ${role}`);
+};
+
+// --- ЗАГРУЗКА КАТАЛОГА С API ---
 async function loadCatalog() {
     const grid = document.getElementById('productsGrid');
     grid.innerHTML = '<div class="loading">Сканирование звездных систем API...</div>';
@@ -64,7 +74,7 @@ async function loadCatalog() {
 
         grid.innerHTML = '';
         if (appState.products.length === 0) {
-            grid.innerHTML = '<div class="loading">В этой туманности товары не найдены 👾</div>';
+            grid.innerHTML = '<div class="loading">Товары не обнаружены 👾</div>';
             return;
         }
 
@@ -73,9 +83,11 @@ async function loadCatalog() {
             card.className = 'product-card';
             
             let circlesHtml = '';
-            product.availableColors.forEach(c => {
-                circlesHtml += `<div class="color-circle" style="background: ${colorMap[c] || '#555'}"></div>`;
-            });
+            if (product.availableColors) {
+                product.availableColors.forEach(c => {
+                    circlesHtml += `<div class="color-circle" style="background: ${colorMap[c] || '#555'}"></div>`;
+                });
+            }
 
             const img = product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/400/140f19/08ffe2?text=MILKA';
 
@@ -91,16 +103,15 @@ async function loadCatalog() {
                 </div>
             `;
             
-            // Клик по карточке открывает экран 3 (Детализация товара)
             card.addEventListener('click', () => showProductDetails(product));
             grid.appendChild(card);
         });
     } catch (e) {
-        grid.innerHTML = '<div class="loading" style="color:#ff4a4a">Ошибка состыковки с C# бэкендом! Запусти dotnet run 🔌</div>';
+        grid.innerHTML = '<div class="loading" style="color:#ff4a4a">Ошибка состыковки с C# бэкендом. Убедись, что запущен dotnet run! 🔌</div>';
     }
 }
 
-// --- ЭКРАН 3: КАРТОЧКА ТОВАРА (ДЕТАЛИ) ---
+// --- ДЕТАЛИЗАЦИЯ ТОВАРА ---
 function showProductDetails(product) {
     const container = document.getElementById('productDetailContent');
     const img = product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/400/140f19/08ffe2?text=MILKA';
@@ -111,28 +122,28 @@ function showProductDetails(product) {
             <span class="product-category">${product.category}</span>
             <h2>${product.productName}</h2>
             <div class="detail-price">${product.price.toLocaleString()} ₽</div>
-            <p class="detail-desc">${product.description || 'Эксклюзивное космическое волокно высокой плотности.'}</p>
-            <button class="cta-btn" id="addToCartBtn">Загрузить в шлюз корзины</button>
+            <p class="detail-desc">${product.description || 'Эксклюзивный крой из коллекции вселенной Milka.'}</p>
+            <button class="cta-btn" id="addToCartBtn">Добавить в корзину</button>
         </div>
     `;
 
     document.getElementById('addToCartBtn').addEventListener('click', () => {
         appState.cart.push(product);
-        document.getElementById('cart-count').innerText = appState.cart.length;
-        alert('Товар успешно добавлен на борт корзины!');
+        document.getElementById('cart-count-badge').innerText = appState.cart.length;
+        alert('Товар добавлен в корзину!');
         navigateTo('view-catalog');
     });
 
     navigateTo('view-product-detail');
 }
 
-// --- ЭКРАН 4: КОРЗИНА ---
+// --- КОРЗИНА ---
 function renderCart() {
     const list = document.getElementById('cartItemsList');
     list.innerHTML = '';
 
     if (appState.cart.length === 0) {
-        list.innerHTML = '<div class="loading">Шлюз пуст. Загрузите вещи в каталоге.</div>';
+        list.innerHTML = '<div class="loading">Корзина пуста. Начните космический шоппинг!</div>';
         return;
     }
 
@@ -154,11 +165,11 @@ function renderCart() {
 
 window.removeFromCart = function(index) {
     appState.cart.splice(index, 1);
-    document.getElementById('cart-count').innerText = appState.cart.length;
+    document.getElementById('cart-count-badge').innerText = appState.cart.length;
     renderCart();
 };
 
-// --- ЭКРАН 7, 8, 9: АДМИНКА, СКЛАД, КУРЬЕР ---
+// --- АДМИНКА И ДРУГИЕ РОЛИ ---
 function renderAdminPanel() {
     const list = document.getElementById('admin-orders-list');
     list.innerHTML = appState.orders.map(o => `
@@ -175,10 +186,10 @@ function renderSellerPanel() {
         <div class="panel-order-card">
             <h3>Заказ ${o.id}</h3>
             <p>Содержимое: ${o.items}</p>
-            <span class="status-badge packing">Требует сборки</span>
-            <button class="panel-btn" onclick="updateOrderStatus('${o.id}', 'delivery')">Передать в гипердрайв курьеру</button>
+            <span class="status-badge packing">Сборка на складе</span>
+            <button class="panel-btn" onclick="updateOrderStatus('${o.id}', 'delivery')">Готов к отправке</button>
         </div>
-    `).join('') : '<div class="loading">Все товары упакованы! 🪐</div>';
+    `).join('') : '<div class="loading">Все заказы упакованы. Склад чист! 🪐</div>';
 }
 
 function renderCourierPanel() {
@@ -187,11 +198,11 @@ function renderCourierPanel() {
     container.innerHTML = deliveryOrders.length ? deliveryOrders.map(o => `
         <div class="panel-order-card">
             <h3>Доставка ${o.id}</h3>
-            <p>Вектор назначения: ${o.address}</p>
-            <span class="status-badge delivery">В гиперпространстве</span>
-            <button class="panel-btn" onclick="updateOrderStatus('${o.id}', 'done')"><i class="fas fa-flag-checkered"></i> Доставлено на планету</button>
+            <p>Адрес: ${o.address}</p>
+            <span class="status-badge delivery">В пути</span>
+            <button class="panel-btn" onclick="updateOrderStatus('${o.id}', 'done')">Вручить клиенту</button>
         </div>
-    `).join('') : '<div class="loading">Нет доступных маршрутов для доставки 🚀</div>';
+    `).join('') : '<div class="loading">Нет маршрутов для доставки 🚀</div>';
 }
 
 window.updateOrderStatus = function(orderId, newStatus) {
@@ -199,58 +210,90 @@ window.updateOrderStatus = function(orderId, newStatus) {
     if (order) {
         if (newStatus === 'done') {
             appState.orders = appState.orders.filter(o => o.id !== orderId);
-            alert('Груз успешно доставлен и подтвержден!');
+            alert('Заказ успешно доставлен клиенту!');
         } else {
             order.status = newStatus;
-            alert('Статус орбитальной логистики изменен!');
+            alert('Статус заказа обновлен!');
         }
         navigateTo(appState.currentView);
     }
 };
 
-// --- НАСТРОЙКА ИНТЕРФЕЙСНЫХ СЛУШАТЕЛЕЙ ---
+// --- ИНИЦИАЛИЗАЦИЯ И СЛУШАТЕЛИ ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Клиентский роутинг по кликам
-    document.querySelectorAll('[data-target]').forEach(element => {
-        element.addEventListener('click', (e) => {
+    // Слушатель для всех кликабельных переходов
+    document.body.addEventListener('click', (e) => {
+        const targetElement = e.target.closest('[data-target]');
+        if (targetElement) {
             e.preventDefault();
-            navigateTo(element.dataset.target);
-        });
+            navigateTo(targetElement.dataset.target);
+        }
     });
 
-    // Фильтры каталога
+    // Поисковая строка в шапке сайта
+    const navSearchInput = document.getElementById('navSearchInput');
+    const executeSearch = () => {
+        appState.currentFilters.search = navSearchInput.value.trim();
+        navigateTo('view-catalog');
+    };
+    document.getElementById('navSearchBtn').addEventListener('click', executeSearch);
+    navSearchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') executeSearch(); });
+
+    // Фильтры боковой панели
     document.getElementById('categoryFilter').addEventListener('change', (e) => { appState.currentFilters.category = e.target.value; loadCatalog(); });
     document.getElementById('colorFilter').addEventListener('change', (e) => { appState.currentFilters.color = e.target.value; loadCatalog(); });
     
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', () => { appState.currentFilters.search = searchInput.value.trim(); loadCatalog(); });
+    // Кнопки размеров
+    const sizeButtons = document.querySelectorAll('.size-btn');
+    sizeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                appState.currentFilters.size = '';
+            } else {
+                sizeButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                appState.currentFilters.size = btn.dataset.size;
+            }
+            loadCatalog();
+        });
+    });
+
+    // Сброс фильтров
+    document.getElementById('resetFiltersBtn').addEventListener('click', () => {
+        appState.currentFilters = { category: '', color: '', size: '', search: '' };
+        document.getElementById('categoryFilter').value = '';
+        document.getElementById('colorFilter').value = '';
+        navSearchInput.value = '';
+        sizeButtons.forEach(b => b.classList.remove('active'));
+        loadCatalog();
+    });
 
     // Оформление заказа
     document.getElementById('placeOrderBtn').addEventListener('click', () => {
-        if (appState.cart.length === 0) return alert('Ваш грузовой отсек пуст!');
+        if (appState.cart.length === 0) return alert('Ваш шлюз корзины пуст!');
         const addr = document.getElementById('checkout-address').value;
-        if (!addr) return alert('Введите космический вектор доставки!');
+        if (!addr) return alert('Укажите адрес доставки!');
 
         const newId = '#ST-' + Math.floor(1000 + Math.random() * 9000);
-        appState.orders.push({ id: newId, address: addr, status: 'packing', items: 'Индивидуальный сет одежды' });
+        appState.orders.push({ id: newId, address: addr, status: 'packing', items: 'Фирменный мерч-пак' });
 
         document.getElementById('generated-order-id').innerText = newId;
         document.querySelector('.checkout-form-panel').style.display = 'none';
         document.getElementById('orderConfirmationScreen').style.display = 'block';
 
-        // Очищаем корзину
         appState.cart = [];
-        document.getElementById('cart-count').innerText = '0';
+        document.getElementById('cart-count-badge').innerText = '0';
     });
 
-    // Аутентификация формы
+    // Форма входа
     document.getElementById('auth-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        alert('Квантовая подпись подтверждена. Добро пожаловать на борт!');
+        alert('Квантовый доступ разрешен!');
         document.getElementById('auth-nav-btn').innerHTML = '<i class="fas fa-user-check"></i> Капитан Yana';
         navigateTo('view-home');
     });
 
-    // Запуск главного экрана
+    // Первая загрузка - открываем главную
     navigateTo('view-home');
 });
