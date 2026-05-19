@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milka Clothing Store | Каталог</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">MILKA<span>.store</span></div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Поиск любимой одежды...">
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+
+        <div class="nav-icons">
+            <a href="#"><i class="fas fa-user"></i></a>
+            <a href="#"><i class="fas fa-shopping-bag"></i></a>
+        </div>
+    </header>
+
+    <main class="catalog-container">
+        
+        <aside class="sidebar-filters">
+            <h3>Фильтры</h3>
+            
+            <div class="filter-group">
+                <h4>Категории</h4>
+                <select id="categoryFilter">
+                    <option value="">Все категории</option>
+                    <option value="Худи и Свитшоты">Худи и Свитшоты</option>
+                    <option value="Штаны и Джинсы">Штаны и Джинсы</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <h4>Размер</h4>
+                <div class="size-selector" id="sizeFilter">
+                    <button class="size-btn" data-size="S">S</button>
+                    <button class="size-btn" data-size="M">M</button>
+                    <button class="size-btn" data-size="L">L</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <h4>Цвет</h4>
+                <select id="colorFilter">
+                    <option value="">Все цвета</option>
+                    <option value="Милка-Фиолетовый">Милка-Фиолетовый</option>
+                    <option value="Угольно-Чёрный">Угольно-Чёрный</option>
+                </select>
+            </div>
+
+            <button id="resetFiltersBtn" class="reset-btn">Сбросить фильтры</button>
+        </aside>
+
+        <section class="products-section">
+            <div class="products-grid" id="productsGrid">
+                <div class="loading">Загрузка неоновой коллекции...</div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
