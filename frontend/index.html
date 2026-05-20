@@ -247,3 +247,131 @@
     <script src="app.js"></script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>MILKA.universe | Космический Стиль</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="space-bg" id="cosmicBg"></div>
+
+    <header class="navbar">
+        <div class="logo" data-target="view-home">MILKA<span>.universe</span></div>
+        <div class="nav-right-block">
+            <div class="promo-badge">Первый заказ: -500 ₽ 🎁</div>
+            <nav class="nav-links">
+                <a href="#" class="nav-link-item" data-target="view-home">Главная</a>
+                <a href="#" class="nav-link-item" data-target="view-catalog">Каталог</a>
+                <a href="#" class="nav-link-item" data-target="view-cart">Корзина <span id="cart-count">0</span></a>
+                <a href="#" class="nav-link-item" data-target="view-auth" id="userBtn">Вход</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <section id="view-home" class="screen-view active">
+            <div class="hero-section">
+                <h1 class="hero-title">НЕОТРАЗИМА</h1>
+                <h1 class="hero-title asymmetric">КАК ЗВЕЗДА</h1>
+                <p class="hero-subtitle">Межгалактическая мода с доставкой в твой сектор.</p>
+                <button class="cta-btn" data-target="view-catalog">В КАТАЛОГ</button>
+            </div>
+
+            <div class="home-scroll-content">
+                <h2 class="section-title">Тренды этой туманности</h2>
+                <div class="carousel-container">
+                    <div class="carousel-track" id="trendingItems">
+                        </div>
+                </div>
+
+                <div class="map-section">
+                    <div class="glass-card map-info">
+                        <h3>Наш Штаб</h3>
+                        <p><i class="fas fa-map-marker-alt"></i> Сектор Зеро, ул. Лавандовая 42</p>
+                        <p><i class="fas fa-phone"></i> +7 (999) MILKA-WAY</p>
+                    </div>
+                    <div class="map-placeholder">
+                        <img src="https://googleusercontent.com/map_mockup_space" alt="Карта">
+                    </div>
+                </div>
+
+                <div class="loyalty-section">
+                    <h2 class="section-title">Система Лояльности "Путь к Звездам"</h2>
+                    <div class="loyalty-grid">
+                        <div class="glass-card loyalty-card">
+                            <i class="fas fa-meteor"></i>
+                            <h4>Комета</h4>
+                            <p>Сумма от 0 ₽</p>
+                            <span>Кэшбек 5%</span>
+                        </div>
+                        <div class="glass-card loyalty-card gold">
+                            <i class="fas fa-ring"></i>
+                            <h4>Планета</h4>
+                            <p>Сумма от 50 000 ₽</p>
+                            <span>Кэшбек 10%</span>
+                        </div>
+                        <div class="glass-card loyalty-card neon">
+                            <i class="fas fa-galaxy"></i>
+                            <h4>Галактика</h4>
+                            <p>Сумма от 150 000 ₽</p>
+                            <span>Кэшбек 15%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-auth" class="screen-view">
+            <div class="auth-glass-card">
+                <div id="auth-login-block">
+                    <h2>С возвращением!</h2>
+                    <form id="loginForm">
+                        <input type="email" placeholder="Email" required>
+                        <input type="password" placeholder="Пароль" required>
+                        <button type="submit" class="glass-submit-btn">Войти</button>
+                    </form>
+                    <p class="glass-footer">Нет аккаунта? <a href="#" id="toReg">Зарегистрироваться</a></p>
+                </div>
+
+                <div id="auth-reg-block" style="display:none;">
+                    <h2>Регистрация Астронавта</h2>
+                    <form id="regForm">
+                        <div class="grid-inputs">
+                            <input type="text" id="reg-fn" placeholder="Имя" required>
+                            <input type="text" id="reg-ln" placeholder="Фамилия" required>
+                        </div>
+                        <input type="email" id="reg-email" placeholder="Электронная почта" required>
+                        <input type="tel" id="reg-phone" placeholder="Номер телефона">
+                        <input type="password" id="reg-pass" placeholder="Придумайте пароль" required>
+                        <button type="submit" class="glass-submit-btn">Создать профиль</button>
+                    </form>
+                    <p class="glass-footer">Уже есть скафандр? <a href="#" id="toLog">Войти</a></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-accountant" class="screen-view">
+            <div class="admin-layout">
+                <h2>Финансовый отчет туманности</h2>
+                <div class="stats-grid">
+                    <div class="glass-card">
+                        <canvas id="profitChart"></canvas>
+                    </div>
+                    <div class="glass-card">
+                        <h4>Расходы на экипаж</h4>
+                        <ul id="salaryList"></ul>
+                        <button class="panel-btn" onclick="addSalary()">+ Добавить выплату</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

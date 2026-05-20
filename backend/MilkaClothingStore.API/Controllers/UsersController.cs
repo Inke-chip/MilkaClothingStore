@@ -52,14 +52,15 @@ namespace MilkaClothingStore.API.Controllers
                     CreatedAt = DateTime.UtcNow
                 };
 
-                // 1. Сохраняем пользователя, чтобы SQL Server сгенерировал ему UserId
+                // 1. Сохраняем пользователя, чтобы SQL Server сгенерировал ему автоматический Id
                 _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
 
                 // 2. Создаем запись в промежуточной таблице связей UserRoles
+                // Исправлена критическая синтаксическая ошибка инициализатора (CS0747)!
                 var userRole = new UserRole
                 {
-                    UserId = newUser.UserId,
+                    UserId = newUser.Id, // Передаем сгенерированный Id нового юзера
                     RoleId = dto.RoleId
                 };
 
@@ -97,9 +98,10 @@ namespace MilkaClothingStore.API.Controllers
                 }
 
                 // 3. Достаем роль пользователя через промежуточную таблицу UserRoles
+                // Заменено устаревшее user.UserId на актуальное user.Id (Исправляет ошибку CS1061)
                 var userRoleSetting = await _context.UserRoles
                     .Include(ur => ur.Role)
-                    .FirstOrDefaultAsync(ur => ur.UserId == user.UserId);
+                    .FirstOrDefaultAsync(ur => ur.UserId == user.Id);
 
                 string roleName = userRoleSetting?.Role?.RoleName ?? "Customer";
 
@@ -109,7 +111,7 @@ namespace MilkaClothingStore.API.Controllers
                     message = "Вход успешно выполнен",
                     user = new
                     {
-                        user.UserId,
+                        user.Id, // Возвращаем Id в соответствии со структурой SQL-таблицы
                         user.Email,
                         user.FirstName,
                         user.LastName,

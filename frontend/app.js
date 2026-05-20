@@ -297,6 +297,61 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('auth-nav-btn').innerHTML = `<i class="fas fa-user-astronaut"></i> Клиент`;
         navigateTo('view-home');
     });
+    // Данные для входа сотрудников
+const staff = {
+    'admin@milka.com': { pass: '123', role: 'admin' },
+    'money@milka.com': { pass: '123', role: 'accountant' }
+};
+
+// Функция входа
+document.getElementById('loginForm').onsubmit = (e) => {
+    e.preventDefault();
+    const email = e.target[0].value;
+    const pass = e.target[1].value;
+
+    if (staff[email] && staff[email].pass === pass) {
+        const role = staff[email].role;
+        alert(`Доступ разрешен: ${role}`);
+        navigateTo('view-' + role);
+    } else {
+        alert('Вход выполнен как клиент. Получена скидка 500р!');
+        navigateTo('view-home');
+    }
+};
+
+// Анимация регистрации
+document.getElementById('toReg').onclick = () => {
+    document.body.classList.add('cosmic-zoom');
+    document.getElementById('auth-login-block').style.display = 'none';
+    document.getElementById('auth-reg-block').style.display = 'block';
+};
+
+// График бухгалтера (Chart.js)
+function initAccountantChart() {
+    const ctx = document.getElementById('profitChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Янв', 'Фев', 'Мар', 'Апр'],
+            datasets: [{
+                label: 'Прибыль (млн ₽)',
+                data: [3.2, 4.5, 3.8, 5.1],
+                borderColor: '#08ffe2',
+                backgroundColor: 'rgba(8, 255, 226, 0.1)',
+                fill: true
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { labels: { color: '#fff' } } } }
+    });
+    window.deleteProduct = (id) => {
+        if(confirm('Удалить этот товар из галактического реестра?')) {
+        // fetch(`/api/admin/products/${id}`, { method: 'DELETE' })
+        alert('Товар удален!');
+    }
+};
+}
+
+
 
     // Поиск
     const navSearchInput = document.getElementById('navSearchInput');
