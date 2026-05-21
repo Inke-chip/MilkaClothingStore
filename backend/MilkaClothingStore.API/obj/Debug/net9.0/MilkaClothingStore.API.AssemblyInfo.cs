@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MilkaClothingStore.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6feaa7297e17fd54d2414466f3b98a772300cea7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+99e16e03808cc414d6b12a68b5d2dae55b91af44")]
 [assembly: System.Reflection.AssemblyProductAttribute("MilkaClothingStore.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MilkaClothingStore.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

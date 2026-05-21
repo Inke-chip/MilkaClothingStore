@@ -1,367 +1,508 @@
-const API_URL = 'http://localhost:5008/api/products';
+/* ==========================================================================
+   1. ИМИТАЦИЯ БАЗЫ ДАННЫХ (ДАТАСЕТ НА 100+ ТОВАРОВ И ЗАКАЗЫ)
+   ========================================================================== */
 
-// База данных ролей (Для распределения сотрудников при авторизации)
-const userRolesDB = {
-    'admin@milka.space': { pass: 'admin123', view: 'view-admin', name: 'Главный Архитектор' },
-    'sklad@milka.space': { pass: 'sklad123', view: 'view-seller', name: 'Старший Сборщик' },
-    'courier@milka.space': { pass: 'courier123', view: 'view-delivery', name: 'Пилот Доставки' },
-    'money@milka.space': { pass: 'money123', view: 'view-accountant', name: 'Главный Бухгалтер' }
+// Массив категорий для генерации
+const categories = ["Женское", "Мужское", "Детское", "Аксессуары"];
+const colors = ["Deep Space Black", "Stardust White", "Cosmic Ginger", "Strawberry Blonde", "Nebula Violet"];
+const sizes = ["XS", "S", "M", "L", "XL"];
+const clothingTypes = ["Платья", "Костюмы", "Пальто", "Худи", "Куртки"];
+const materials = ["Метеоритная сталь", "Углеродное волокно", "Звездное серебро", "Космический шелк"];
+const accTypes = ["Очки", "Часы", "Сумки", "Ремни"];
+
+// Генератор картинок для разнообразия
+const imgTemplates = {
+    "Женское": "https://images.unsplash.com/photo-1515347619252-8d2a1bf6f162?auto=format&fit=crop&q=80",
+    "Мужское": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80",
+    "Детское": "https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&q=80",
+    "Аксессуары": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80"
 };
 
-let appState = {
-    products: [],
-    cart: [],
-    orders: [
-        { id: '#ST-8841', address: 'Орбитальная Станция МИР-2', status: 'packing', items: 'Худи Milka (1 шт)' },
-        { id: '#ST-3412', address: 'Созвездие Кассиопея, Платформа 7', status: 'delivery', items: 'Штаны Неон (2 шт)' }
-    ],
-    currentFilters: { category: '', color: '', size: '', search: '' },
-    currentView: 'view-home'
-};
+let productsDb = [];
 
-const colorMap = {
-    'Милка-Фиолетовый': '#9202f2',
-    'Угольно-Чёрный': '#1a1a1a',
-    'Белый': '#ffffff',
-    'Лавандовый': '#ce99f2'
-};
+// Генерируем 105 товаров для глубокого каталога
+for (let i = 1; i <= 105; i++) {
+    let cat = categories[i % categories.length];
+    let color = colors[i % colors.length];
+    let type = cat === "Аксессуары" ? accTypes[i % accTypes.length] : clothingTypes[i % clothingTypes.length];
+    let meta = cat === "Аксессуары" ? materials[i % materials.length] : sizes[i % sizes.length];
+    let basePrice = 5000 + (i * 270) % 45000;
 
-// --- SPA РОУТЕР ---
-function navigateTo(targetViewId) {
-    document.querySelectorAll('.screen-view').forEach(screen => screen.classList.remove('active'));
-    
-    const activeScreen = document.getElementById(targetViewId);
-    if (activeScreen) activeScreen.classList.add('active');
-
-    document.querySelectorAll('.nav-link-item').forEach(link => {
-        link.classList.remove('active');
-        if (link.dataset.target === targetViewId) link.classList.add('active');
+    productsDb.push({
+        id: i,
+        name: `${type} "${cat === 'Аксессуары' ? 'Квазар' : 'Галактика'} — ${i}"`,
+        category: cat,
+        price: basePrice,
+        color: color,
+        type: type,
+        meta: meta, // Для одежды это размер, для аксессуаров - материал
+        image: imgTemplates[cat]
     });
-
-    // Сбрасываем зум фона при уходе с экрана авторизации
-    if (targetViewId !== 'view-auth') {
-        document.getElementById('cosmicBg').classList.remove('cosmic-zoomed');
-    }
-
-    appState.currentView = targetViewId;
-    window.scrollTo(0, 0);
-
-    if (targetViewId === 'view-catalog') loadCatalog();
-    if (targetViewId === 'view-cart') renderCart();
-    if (targetViewId === 'view-admin') renderAdminPanel();
-    if (targetViewId === 'view-seller') renderSellerPanel();
-    if (targetViewId === 'view-delivery') renderCourierPanel();
 }
 
-// --- КАТАЛОГ С С# API ---
-async function loadCatalog() {
-    const grid = document.getElementById('productsGrid');
-    grid.innerHTML = '<div class="loading">Сканирование звездных систем API...</div>';
+// Базовые тестовые пользователи (Бэкенд заменит это на хэши в SQL)
+const usersDb = [
+    { email: "admin@milka.space", pass: "admin2026", name: "Главный Навигатор", role: "Admin" },
+    { email: "picker@milka.space", pass: "pick2026", name: "Сборщик Сектора 4", role: "Picker" },
+    { email: "accountant@milka.space", pass: "money2026", name: "Главный Аудитор", role: "Accountant" },
+    { email: "user@milka.space", pass: "user2026", name: "Елена Орион", role: "Customer" }
+];
 
-    try {
-        const url = new URL(API_URL);
-        const f = appState.currentFilters;
-        if (f.category) url.searchParams.append('category', f.category);
-        if (f.color) url.searchParams.append('color', f.color);
-        if (f.size) url.searchParams.append('size', f.size);
-        if (f.search) url.searchParams.append('search', f.search);
+// Начальный пул заказов для Сборщика
+let ordersDb = [
+    { id: "ORD-4402", items: "Шелковое платье \"Сириус\" (Женское) x1", note: "Проверить застежки перед отправкой", status: "В процессе" },
+    { id: "ORD-7719", items: "Костюм \"Метеор\" (Мужское) x1, Часы Затмения x1", note: "Хрупкое стекло", status: "В процессе" },
+    { id: "ORD-9012", items: "Худи куртка (Детское) x2", note: "Подарочная космическая упаковка", status: "В процессе" }
+];
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error('Ошибка');
-        appState.products = await response.json();
+// Глобальное состояние сессии фронтенда
+let currentUser = null;
+let currentCategory = "Женское"; // По умолчанию открываем этот отсек
 
-        grid.innerHTML = '';
-        if (appState.products.length === 0) {
-            grid.innerHTML = '<div class="loading">Товары не обнаружены 👾</div>';
+/* ==========================================================================
+   2. СИСТЕМА ИНИЦИАЛИЗАЦИИ И МАРШРУТИЗАЦИИ (SPA)
+   ========================================================================== */
+document.addEventListener("DOMContentLoaded", () => {
+    initNavigation();
+    initAuthLogic();
+    initCatalogFilters();
+    initSearchAnimation();
+    initAdminPanel();
+    initPickerPanel();
+    
+    // Рендерим стартовый контент
+    renderCatalog();
+    renderFinancialChart();
+});
+
+// Переключение экранов (Элегантный SPA-эффект)
+function switchScreen(targetViewId) {
+    document.querySelectorAll(".screen-view").forEach(screen => {
+        screen.classList.remove("active");
+    });
+    const targetScreen = document.getElementById(targetViewId);
+    if (targetScreen) {
+        targetScreen.classList.add("active");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function initNavigation() {
+    // Клики по логотипу и ссылкам категорий
+    document.querySelectorAll("[data-target]").forEach(element => {
+        element.addEventListener("click", (e) => {
+            e.preventDefault();
+            switchScreen(element.getAttribute("data-target"));
+        });
+    });
+
+    // Обработка кликов по главным категориям в Навбаре и Футере
+    document.querySelectorAll(".main-cat-link").forEach(link => {
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+            currentCategory = link.getAttribute("data-category");
+            
+            // Настраиваем видимость фильтров в зависимости от выбранного сектора
+            adjustFilterInputsVisibility();
+            
+            // Обновляем текстовые заголовки в каталоге
+            document.getElementById("catalog-title-display").innerText = `Отсек: ${currentCategory}`;
+            document.getElementById("catalog-subtitle-display").innerText = `Линейка товаров премиум-класса категории ${currentCategory.toLowerCase()}`;
+            
+            resetFilters();
+            renderCatalog();
+            switchScreen("view-catalog");
+        });
+    });
+
+    // Кнопка на главном баннере
+    const exploreBtn = document.getElementById("explore-collection-btn");
+    if (exploreBtn) {
+        exploreBtn.addEventListener("click", () => {
+            currentCategory = "Женское";
+            adjustFilterInputsVisibility();
+            renderCatalog();
+            switchScreen("view-catalog");
+        });
+    }
+}
+
+/* ==========================================================================
+   3. ВЫТЯГИВАЮЩИЙСЯ ПОИСК И ФИЛЬТРАЦИЯ
+   ========================================================================== */
+function initSearchAnimation() {
+    const searchBlock = document.getElementById("search-block");
+    const searchInput = document.getElementById("search-input");
+    const triggerBtn = document.getElementById("search-trigger-btn");
+
+    triggerBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        searchBlock.classList.toggle("active");
+        if (searchBlock.classList.contains("active")) {
+            searchInput.focus();
+        }
+    });
+
+    // Закрытие поиска при клике мимо, если поле пустое
+    document.addEventListener("click", (e) => {
+        if (!searchBlock.contains(e.target) && searchInput.value.trim() === "") {
+            searchBlock.classList.remove("active");
+        }
+    });
+
+    // Живой поиск совпадений среди товаров при вводе текста
+    searchInput.addEventListener("input", () => {
+        switchScreen("view-catalog");
+        renderCatalog();
+    });
+}
+
+function adjustFilterInputsVisibility() {
+    const clothingFilters = document.getElementById("filter-group-clothing");
+    const accFilters = document.getElementById("filter-group-accessories");
+
+    if (currentCategory === "Аксессуары") {
+        clothingFilters.style.display = "none";
+        accFilters.style.display = "flex";
+    } else {
+        clothingFilters.style.display = "flex";
+        accFilters.style.display = "none";
+    }
+}
+
+function initCatalogFilters() {
+    const filterIds = ["filter-size", "filter-color", "filter-clothing-type", "filter-material", "filter-acc-type"];
+    filterIds.forEach(id => {
+        document.getElementById(id).addEventListener("change", renderCatalog);
+    });
+
+    document.getElementById("reset-filters-btn").addEventListener("click", () => {
+        resetFilters();
+        renderCatalog();
+        showToast("Фильтры орбиты успешно сброшены", "info");
+    });
+}
+
+function resetFilters() {
+    document.getElementById("filter-size").value = "all";
+    document.getElementById("filter-color").value = "all";
+    document.getElementById("filter-clothing-type").value = "all";
+    document.getElementById("filter-material").value = "all";
+    document.getElementById("filter-acc-type").value = "all";
+}
+
+// Ядро фильтрации и вывода товаров на фронтенде
+function renderCatalog() {
+    const grid = document.getElementById("catalog-products-grid");
+    const emptyMsg = document.getElementById("catalog-empty-msg");
+    const searchQuery = document.getElementById("search-input").value.toLowerCase().trim();
+
+    // Извлекаем значения фильтров
+    const sizeVal = document.getElementById("filter-size").value;
+    const colorVal = document.getElementById("filter-color").value;
+    const clothTypeVal = document.getElementById("filter-clothing-type").value;
+    const matVal = document.getElementById("filter-material").value;
+    const accTypeVal = document.getElementById("filter-acc-type").value;
+
+    grid.innerHTML = "";
+
+    // Фильтруем массив данных
+    let filtered = productsDb.filter(p => {
+        if (p.category !== currentCategory) return false;
+
+        // Поиск по тексту (название, цвет, тип)
+        if (searchQuery && !p.name.toLowerCase().includes(searchQuery) && !p.color.toLowerCase().includes(searchQuery)) {
+            return false;
+        }
+
+        // Кастомные селекторы
+        if (currentCategory === "Аксессуары") {
+            if (matVal !== "all" && p.meta !== matVal) return false;
+            if (accTypeVal !== "all" && p.type !== accTypeVal) return false;
+        } else {
+            if (sizeVal !== "all" && p.meta !== sizeVal) return false;
+            if (colorVal !== "all" && p.color !== colorVal) return false;
+            if (clothTypeVal !== "all" && p.type !== clothTypeVal) return false;
+        }
+
+        return true;
+    });
+
+    // Отрисовка результатов
+    if (filtered.length === 0) {
+        emptyMsg.style.display = "block";
+    } else {
+        emptyMsg.style.display = "none";
+        filtered.forEach(prod => {
+            const card = document.createElement("div");
+            card.className = "product-card";
+            card.innerHTML = `
+                <img src="${prod.image}" class="prod-img" alt="${prod.name}">
+                <div class="prod-cat">${prod.category} • ${prod.color}</div>
+                <div class="prod-name">${prod.name}</div>
+                <div class="prod-price">${prod.price.toLocaleString()} ₽</div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+}
+
+/* ==========================================================================
+   4. ВАЛИДАЦИЯ И КОНТРОЛЬ ДОСТУПА ПО РОЛЯМ
+   ========================================================================== */
+function initAuthLogic() {
+    const formLogin = document.getElementById("form-login-gate");
+    const formRegister = document.getElementById("form-register-gate");
+    
+    // Переключатели форм
+    document.getElementById("go-to-reg-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        document.getElementById("box-login").style.display = "none";
+        document.getElementById("box-register").style.display = "block";
+    });
+
+    document.getElementById("go-to-login-btn").addEventListener("click", (e) => {
+        e.preventDefault();
+        document.getElementById("box-register").style.display = "none";
+        document.getElementById("box-login").style.display = "block";
+    });
+
+    // Валидация входа (Если пользователя нет - не впускать!)
+    formLogin.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const emailInput = document.getElementById("gate-login-email").value.trim();
+        const passInput = document.getElementById("gate-login-password").value;
+
+        // Поиск совпадений в системе
+        const user = usersDb.find(u => u.email === emailInput && u.pass === passInput);
+
+        if (!user) {
+            showToast("Ошибка авторизации: Такого пользователя нет или пароль неверный!", "danger");
             return;
         }
 
-        appState.products.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            
-            let circlesHtml = '';
-            if (product.availableColors) {
-                product.availableColors.forEach(c => {
-                    circlesHtml += `<div class="color-circle" style="background: ${colorMap[c] || '#555'}"></div>`;
-                });
-            }
-
-            const img = product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/400/140f19/08ffe2?text=MILKA';
-
-            card.innerHTML = `
-                <div class="image-container"><img src="${img}"></div>
-                <div class="product-info">
-                    <span class="product-category">${product.category}</span>
-                    <h4 class="product-name">${product.productName}</h4>
-                    <div class="product-colors">${circlesHtml}</div>
-                    <div class="product-meta">
-                        <span class="product-price">${product.price.toLocaleString()} ₽</span>
-                    </div>
-                </div>
-            `;
-            card.addEventListener('click', () => showProductDetails(product));
-            grid.appendChild(card);
-        });
-    } catch (e) {
-        grid.innerHTML = '<div class="loading" style="color:#ff4a4a">Ошибка состыковки с API. Запусти бэкенд 🔌</div>';
-    }
-}
-
-// --- КАРТОЧКА ТОВАРА (Описание, Состав, Кружочки, Остаток) ---
-function showProductDetails(product) {
-    const container = document.getElementById('productDetailContent');
-    const img = product.imageUrl ? product.imageUrl : 'https://via.placeholder.com/400/140f19/08ffe2?text=MILKA';
-
-    // Генерируем кружочки цветов
-    let circlesHtml = '';
-    if (product.availableColors) {
-        product.availableColors.forEach(c => {
-            circlesHtml += `<div class="color-circle" style="background: ${colorMap[c] || '#555'}; width:24px; height:24px; display:inline-block; margin-right:8px;"></div>`;
-        });
-    }
-
-    // Имитация состава и остатков (если бэкенд их ещё не передает)
-    const fabric = product.fabricComposition || 'Состав: 80% Органический космический хлопок, 20% Полиэстер высокой прочности';
-    const stockCount = product.stockQty || Math.floor(Math.random() * 12) + 2; // Генерация остатка для витрины
-
-    container.innerHTML = `
-        <div class="detail-img-box"><img src="${img}"></div>
-        <div class="detail-info-box">
-            <span class="product-category">${product.category}</span>
-            <h2>${product.productName}</h2>
-            <div class="detail-price">${product.price.toLocaleString()} ₽</div>
-            
-            <p class="detail-desc">${product.description || 'Эксклюзивный оверсайз крой с усиленными швами. Идеально держит форму.'}</p>
-            <div class="detail-fabric"><i class="fas fa-atom"></i> ${fabric}</div>
-            
-            <div style="margin-bottom: 20px;">
-                <label style="display:block; font-size:12px; text-transform:uppercase; color:var(--text-gray); margin-bottom:8px;">Доступные цвета спектра:</label>
-                <div class="product-colors">${circlesHtml}</div>
-            </div>
-
-            <div class="detail-stock"><i class="fas fa-boxes"></i> Остаток в вашей туманности: ${stockCount} шт.</div>
-            
-            <button class="cta-btn" id="addToCartBtn" style="width:100%">Загрузить в отсек корзины</button>
-        </div>
-    `;
-
-    document.getElementById('addToCartBtn').addEventListener('click', () => {
-        appState.cart.push(product);
-        document.getElementById('cart-count-badge').innerText = appState.cart.length;
-        alert('Товар добавлен на борт корзины!');
-        navigateTo('view-catalog');
+        // Если ок - авторизуем
+        executeLoginSuccess(user);
     });
 
-    navigateTo('view-product-detail');
-}
-
-// --- КОРЗИНА ---
-function renderCart() {
-    const list = document.getElementById('cartItemsList');
-    list.innerHTML = '';
-    if (appState.cart.length === 0) {
-        list.innerHTML = '<div class="loading">Шлюз корзины пуст.</div>';
-        return;
-    }
-    appState.cart.forEach((item, index) => {
-        const row = document.createElement('div');
-        row.className = 'cart-item';
-        row.innerHTML = `
-            <img class="cart-item-img" src="${item.imageUrl || 'https://via.placeholder.com/100'}">
-            <div><h4>${item.productName}</h4><p>${item.price} ₽</p></div>
-            <button class="size-btn" style="border-color:#ff4a4a;color:#ff4a4a" onclick="removeFromCart(${index})"><i class="fas fa-trash"></i></button>
-        `;
-        list.appendChild(row);
-    });
-    document.getElementById('cart-summary-items').innerText = `${appState.cart.length} шт.`;
-    const total = appState.cart.reduce((sum, item) => sum + item.price, 0);
-    document.getElementById('cart-summary-total').innerText = `${total.toLocaleString()} ₽`;
-}
-
-window.removeFromCart = function(index) {
-    appState.cart.splice(index, 1);
-    document.getElementById('cart-count-badge').innerText = appState.cart.length;
-    renderCart();
-};
-
-// --- РОЛИ УПРАВЛЕНИЯ ---
-function renderAdminPanel() {
-    document.getElementById('admin-orders-list').innerHTML = appState.orders.map(o => `
-        <div style="padding:10px;border-bottom:1px solid rgba(255,255,255,0.05)">
-            <strong>${o.id}</strong> — ${o.address} <span class="status-badge ${o.status}">${o.status}</span>
-        </div>
-    `).join('');
-}
-
-function renderSellerPanel() {
-    const grid = document.getElementById('sellerOrdersGrid');
-    const packingOrders = appState.orders.filter(o => o.status === 'packing');
-    grid.innerHTML = packingOrders.length ? packingOrders.map(o => `
-        <div class="panel-order-card">
-            <h3>Заказ ${o.id}</h3>
-            <p>Содержимое: ${o.items}</p>
-            <span class="status-badge packing">Ожидает сборки</span>
-            <button class="panel-btn" onclick="updateOrderStatus('${o.id}', 'delivery')">Собрано и упаковано</button>
-        </div>
-    `).join('') : '<div class="loading">Все заказы укомплектованы!</div>';
-}
-
-function renderCourierPanel() {
-    const container = document.getElementById('courierDeliveries');
-    const deliveryOrders = appState.orders.filter(o => o.status === 'delivery');
-    container.innerHTML = deliveryOrders.length ? deliveryOrders.map(o => `
-        <div class="panel-order-card">
-            <h3>Груз ${o.id}</h3>
-            <p>Маршрут: ${o.address}</p>
-            <span class="status-badge delivery">В гипердоставке</span>
-            <button class="panel-btn" onclick="updateOrderStatus('${o.id}', 'done')">Вручено адресату</button>
-        </div>
-    `).join('') : '<div class="loading">Свободных доставок нет.</div>';
-}
-
-window.updateOrderStatus = function(orderId, newStatus) {
-    const order = appState.orders.find(o => o.id === orderId);
-    if (order) {
-        if (newStatus === 'done') {
-            appState.orders = appState.orders.filter(o => o.id !== orderId);
-        } else {
-            order.status = newStatus;
-        }
-        navigateTo(appState.currentView);
-    }
-};
-
-// --- ИНИЦИАЛИЗАЦИЯ И ОБРАБОТЧИКИ ---
-document.addEventListener('DOMContentLoaded', () => {
-    
-    // Глобальный кликаут для SPA роутинга
-    document.body.addEventListener('click', (e) => {
-        const targetElement = e.target.closest('[data-target]');
-        if (targetElement) {
-            e.preventDefault();
-            navigateTo(targetElement.dataset.target);
-        }
-    });
-
-    // --- КЛИКАБЕЛЬНАЯ АНИМАЦИЯ ЗУМА И ПЕРЕКЛЮЧЕНИЯ ВХОД/РЕГИСТРАЦИЯ ---
-    const bg = document.getElementById('cosmicBg');
-    const loginBlock = document.getElementById('auth-login-block');
-    const registerBlock = document.getElementById('auth-register-block');
-
-    document.getElementById('goToRegisterBtn').addEventListener('click', (e) => {
+    // Имитация регистрации
+    formRegister.addEventListener("submit", (e) => {
         e.preventDefault();
-        bg.classList.add('cosmic-zoomed'); // Приближаем Млечный путь
-        loginBlock.style.display = 'none';
-        registerBlock.style.display = 'block';
-    });
+        const email = document.getElementById("gate-reg-email").value.trim();
+        const pass = document.getElementById("gate-reg-password").value;
+        const name = `${document.getElementById("gate-reg-firstname").value} ${document.getElementById("gate-reg-lastname").value}`;
+        const role = document.getElementById("gate-reg-role").value;
 
-    document.getElementById('goToLoginBtn').addEventListener('click', (e) => {
-        e.preventDefault();
-        bg.classList.remove('cosmic-zoomed'); // Отдаляем обратно
-        registerBlock.style.display = 'none';
-        loginBlock.style.display = 'block';
-    });
-
-    // Иконка показа пароля
-    document.querySelector('.toggle-password').addEventListener('click', (e) => {
-        const input = document.getElementById('login-pass');
-        if (input.type === 'password') {
-            input.type = 'text';
-            e.target.classList.replace('fa-eye', 'fa-eye-slash');
-        } else {
-            input.type = 'password';
-            e.target.classList.replace('fa-eye-slash', 'fa-eye');
-        }
-    });
-
-    // --- УМНАЯ АУТЕНТИФИКАЦИЯ ПО РОЛЯМ ---
-    document.getElementById('login-form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value.trim();
-        const pass = document.getElementById('login-pass').value.trim();
-
-        // Проверяем, есть ли такой сотрудник в базе ролей
-        if (userRolesDB[email]) {
-            const user = userRolesDB[email];
-            if (user.pass === pass) {
-                alert(`Доступ разрешен. Роль: ${user.name}`);
-                document.getElementById('auth-nav-btn').innerHTML = `<i class="fas fa-user-tie"></i> ${user.name}`;
-                navigateTo(user.view); // Перекидываем на нужный интерфейс
-                return;
-            }
+        if (usersDb.some(u => u.email === email)) {
+            showToast("Данный почтовый сектор уже занят!", "danger");
+            return;
         }
 
-        // Если это не сотрудник, пускаем как обычного покупателя (Клиента)
-        alert('Успешный вход! Добро пожаловать на борт, Капитан.');
-        document.getElementById('auth-nav-btn').innerHTML = `<i class="fas fa-user-astronaut"></i> Клиент`;
-        navigateTo('view-home');
+        const newUser = { email, pass, name, role };
+        usersDb.push(newUser);
+        showToast("Учетная запись создана. Выполняем автоматический вход...", "success");
+        executeLoginSuccess(newUser);
     });
-    // Данные для входа сотрудников
-const staff = {
-    'admin@milka.com': { pass: '123', role: 'admin' },
-    'money@milka.com': { pass: '123', role: 'accountant' }
-};
 
-// Функция входа
-document.getElementById('loginForm').onsubmit = (e) => {
-    e.preventDefault();
-    const email = e.target[0].value;
-    const pass = e.target[1].value;
+    // Кнопки выхода
+    document.getElementById("logoutBtn").addEventListener("click", executeLogout);
+    document.getElementById("btn-logout-inside").addEventListener("click", executeLogout);
+}
 
-    if (staff[email] && staff[email].pass === pass) {
-        const role = staff[email].role;
-        alert(`Доступ разрешен: ${role}`);
-        navigateTo('view-' + role);
+function executeLoginSuccess(user) {
+    currentUser = user;
+    showToast(`Добро пожаловать, ${user.name}! С возвращением на борт.`, "success");
+
+    // Обновляем шапку
+    document.getElementById("loginBtn").style.display = "none";
+    document.getElementById("userMenuBtn").style.display = "block";
+    document.getElementById("userNameDisplay").innerText = `${user.name} ▼`;
+
+    // Скрываем все админские ссылки по умолчанию
+    document.getElementById("link-admin").style.display = "none";
+    document.getElementById("link-picker").style.display = "none";
+    document.getElementById("link-account").style.display = "none";
+
+    // Открываем права строго по ролям. АДМИН НЕ ВИДИТ БУХГАЛТЕРИЮ.
+    if (user.role === "Admin") {
+        document.getElementById("link-admin").style.display = "block";
+        switchScreen("view-admin");
+        renderAdminTable();
+    } else if (user.role === "Picker") {
+        document.getElementById("link-picker").style.display = "block";
+        switchScreen("view-picker");
+        renderPickerOrders();
+    } else if (user.role === "Accountant") {
+        document.getElementById("link-account").style.display = "block";
+        switchScreen("view-accountant");
     } else {
-        alert('Вход выполнен как клиент. Получена скидка 500р!');
-        navigateTo('view-home');
+        // Обычный покупатель
+        document.getElementById("profile-full-name").innerText = user.name;
+        document.getElementById("profile-email-label").innerText = user.email;
+        switchScreen("view-profile");
+    }
+}
+
+function executeLogout(e) {
+    if(e) e.preventDefault();
+    currentUser = null;
+    document.getElementById("loginBtn").style.display = "block";
+    document.getElementById("userMenuBtn").style.display = "none";
+    
+    // Сброс полей форм
+    document.getElementById("form-login-gate").reset();
+    document.getElementById("form-register-gate").reset();
+    
+    showToast("Вы вышли из системы. Безопасной сборки космоса!", "info");
+    switchScreen("view-home");
+}
+
+/* ==========================================================================
+   5. ПАНЕЛЬ АДМИНИСТРАТОРА (ДОБАВЛЕНИЕ / УДАЛЕНИЕ ИЗ 4-Х ОТСЕКОВ)
+   ========================================================================== */
+function initAdminPanel() {
+    const addForm = document.getElementById("admin-add-product-form");
+    addForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        const newProd = {
+            id: productsDb.length + 1,
+            name: document.getElementById("admin-p-name").value.trim(),
+            price: parseFloat(document.getElementById("admin-p-price").value),
+            category: document.getElementById("admin-p-category").value,
+            color: document.getElementById("admin-p-color").value.trim() || "Classic Custom",
+            meta: document.getElementById("admin-p-meta").value.trim() || "Universal",
+            type: "Кастом",
+            image: document.getElementById("admin-p-image").value.trim() || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80"
+        };
+
+        productsDb.unshift(newProd); // Добавляем в начало
+        showToast(`Товар "${newProd.name}" успешно интегрирован в раздел ${newProd.category}`, "success");
+        addForm.reset();
+        renderAdminTable();
+        renderCatalog();
+    });
+}
+
+function renderAdminTable() {
+    const tbody = document.getElementById("admin-catalog-table-body");
+    tbody.innerHTML = "";
+
+    // Показываем первые 15 товаров для удобства менеджмента во фронтенде
+    productsDb.slice(0, 15).forEach(prod => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>#${prod.id}</td>
+            <td><strong>${prod.name}</strong></td>
+            <td><span class="status-pill processing">${prod.category}</span></td>
+            <td>${prod.price.toLocaleString()} ₽</td>
+            <td><button class="btn-picker-status reject-btn" onclick="deleteProductFromAdmin(${prod.id})"><i class="fas fa-trash-alt"></i> Исключить</button></td>
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// Глобальная функция удаления (чтобы работала через onclick в строке таблицы)
+window.deleteProductFromAdmin = function(id) {
+    productsDb = productsDb.filter(p => p.id !== id);
+    showToast(`Товар #${id} стерт из реестра каталога`, "info");
+    renderAdminTable();
+    renderCatalog();
+};
+
+/* ==========================================================================
+   6. МОНИТОР СБОРЩИКА (УПРАВЛЕНИЕ СТАТУСАМИ)
+   ========================================================================== */
+function initPickerPanel() {
+    // Архитектура готова под динамические операции
+}
+
+function renderPickerOrders() {
+    const container = document.getElementById("picker-orders-cards-container");
+    container.innerHTML = "";
+
+    ordersDb.forEach(order => {
+        const card = document.createElement("div");
+        card.className = "order-fulfillment-card";
+        
+        let statusClass = order.status === "Собран" ? "delivered" : "processing";
+        if(order.status === "Нет в наличии") statusClass = "reject-btn";
+
+        card.innerHTML = `
+            <div class="card-status-header header-processing">
+                <span>Магистраль: ${order.id}</span>
+                <strong class="status-pill ${statusClass}">${order.status}</strong>
+            </div>
+            <div class="card-body-details">
+                <p class="picker-item-row"><i class="fas fa-cubes"></i> ${order.items}</p>
+                <hr class="card-divider">
+                <p class="customer-note"><strong>Директива:</strong> ${order.note}</p>
+            </div>
+            <div class="card-action-footer">
+                <button class="btn-picker-status approve-btn" onclick="changeOrderStatus('${order.id}', 'Собран')"><i class="fas fa-check"></i> СОБРАН</button>
+                <button class="btn-picker-status reject-btn" onclick="changeOrderStatus('${order.id}', 'Нет в наличии')"><i class="fas fa-times"></i> НЕТ В НАЛИЧИИ</button>
+            </div>
+        `;
+        container.appendChild(card);
+    });
+}
+
+window.changeOrderStatus = function(orderId, newStatus) {
+    const order = ordersDb.find(o => o.id === orderId);
+    if (order) {
+        order.status = newStatus;
+        showToast(`Статус комплектации заказа ${orderId} изменен на: ${newStatus}`, "info");
+        renderPickerOrders();
     }
 };
 
-// Анимация регистрации
-document.getElementById('toReg').onclick = () => {
-    document.body.classList.add('cosmic-zoom');
-    document.getElementById('auth-login-block').style.display = 'none';
-    document.getElementById('auth-reg-block').style.display = 'block';
-};
+/* ==========================================================================
+   7. СЕРВИС УВЕДОМЛЕНИЙ (TOASTS) И АНАЛИТИКА ТЫС. РУБ.
+   ========================================================================== */
+function showToast(message, type = "info") {
+    const container = document.getElementById("toast-container");
+    const toast = document.createElement("div");
+    toast.className = `toast ${type}`;
+    
+    let icon = "fas fa-info-circle";
+    if (type === "success") icon = "fas fa-check-circle";
+    if (type === "danger") icon = "fas fa-exclamation-triangle";
 
-// График бухгалтера (Chart.js)
-function initAccountantChart() {
-    const ctx = document.getElementById('profitChart').getContext('2d');
+    toast.innerHTML = `<i class="${icon}"></i> <span>${message}</span>`;
+    container.appendChild(toast);
+
+    // Плавное удаление из DOM
+    setTimeout(() => {
+        toast.style.animation = "slideInRight 0.4s reverse forwards";
+        toast.addEventListener("animationend", () => toast.remove());
+    }, 4000);
+}
+
+function renderFinancialChart() {
+    const ctx = document.getElementById('financeDistributionChart');
+    if (!ctx) return;
+
+    // Инициализация Chart.js для панели бухгалтера
     new Chart(ctx, {
-        type: 'line',
+        type: 'doughnut',
         data: {
-            labels: ['Янв', 'Фев', 'Мар', 'Апр'],
+            labels: ['Чистая прибыль', 'Налоги (13%)', 'Логистика', 'ФОТ', 'Амортизация'],
             datasets: [{
-                label: 'Прибыль (млн ₽)',
-                data: [3.2, 4.5, 3.8, 5.1],
-                borderColor: '#08ffe2',
-                backgroundColor: 'rgba(8, 255, 226, 0.1)',
-                fill: true
+                data: [799.5, 188.5, 120, 350, 92], // Строго в тысячах рублей по ведомости
+                backgroundColor: ['#d8b4e2', '#626d77', '#ffb74d', '#e57373', '#1a1a26'],
+                borderColor: 'rgba(255,255,255,0.08)',
+                borderWidth: 1
             }]
         },
-        options: { responsive: true, plugins: { legend: { labels: { color: '#fff' } } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#a0aab2', font: { family: 'Montserrat', size: 11 } }
+                }
+            }
+        }
     });
-    window.deleteProduct = (id) => {
-        if(confirm('Удалить этот товар из галактического реестра?')) {
-        // fetch(`/api/admin/products/${id}`, { method: 'DELETE' })
-        alert('Товар удален!');
-    }
-};
 }
-
-
-
-    // Поиск
-    const navSearchInput = document.getElementById('navSearchInput');
-    const runSearch = () => { appState.currentFilters.search = navSearchInput.value.trim(); navigateTo('view-catalog'); };
-    document.getElementById('navSearchBtn').addEventListener('click', runSearch);
-    navSearchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') runSearch(); });
-
-    // Фильтры
-    document.getElementById('categoryFilter').addEventListener('change', (e) => { appState.currentFilters.category = e.target.value; loadCatalog(); });
-    document.getElementById('colorFilter').addEventListener('change', (e) => { appState.currentFilters.color = e.target.value; loadCatalog(); });
-
-    navigateTo('view-home');
-});
