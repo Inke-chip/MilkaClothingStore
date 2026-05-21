@@ -3,374 +3,546 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MILKA.universe | Галактическая Одежда</title>
+    <title>MILKA.universe | Premium Space Fashion Boutique</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-
-    <div class="space-bg" id="cosmicBg">
-        <div class="stars"></div>
-        <div class="nebula"></div>
-    </div>
-
-    <header class="navbar">
-        <div class="logo" data-target="view-home">MILKA<span>.universe</span></div>
-        
-        <div class="nav-right-block">
-            <div class="nav-search-box">
-                <input type="text" id="navSearchInput" placeholder="Поиск по галактике...">
-                <button id="navSearchBtn"><i class="fas fa-search"></i></button>
-            </div>
-
-            <nav class="nav-links">
-                <a href="#" class="nav-link-item" data-target="view-home">Главная</a>
-                <a href="#" class="nav-link-item" data-target="view-catalog">Каталог</a>
-                <a href="#" class="nav-link-item" data-target="view-cart">
-                    Корзина <span id="cart-count-badge">0</span>
-                </a>
-                <a href="#" class="nav-link-item" data-target="view-auth" id="auth-nav-btn">
-                    <i class="fas fa-user-astronaut"></i> Вход
-                </a>
-            </nav>
-        </div>
-    </header>
-
-    <main class="app-container">
-
-        <section id="view-home" class="screen-view">
-            <div class="hero-section">
-                <div class="hero-title-wrapper">
-                    <h1 class="hero-title">НЕОТРАЗИМА</h1>
-                    <h1 class="hero-title asymmetric">КАК ЗВЕЗДА</h1>
-                </div>
-                <p class="hero-subtitle">Одежда, заряженная гравитацией Млечного Пути. Твой новый межгалактический стиль уже здесь.</p>
-                <button class="cta-btn" data-target="view-catalog">Открыть каталог <i class="fas fa-space-shuttle"></i></button>
-            </div>
-        </section>
-
-        <section id="view-catalog" class="screen-view">
-            <div class="catalog-layout">
-                <aside class="sidebar-filters">
-                    <h3>Фильтрация</h3>
-                    <div class="filter-group">
-                        <label>Категория</label>
-                        <select id="categoryFilter">
-                            <option value="">Все туманности</option>
-                            <option value="Худи и Свитшоты">Худи и Свитшоты</option>
-                            <option value="Штаны и Джинсы">Штаны и Джинсы</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Размер</label>
-                        <div class="size-selector" id="sizeFilter">
-                            <button class="size-btn" data-size="S">S</button>
-                            <button class="size-btn" data-size="M">M</button>
-                            <button class="size-btn" data-size="L">L</button>
-                        </div>
-                    </div>
-                    <div class="filter-group">
-                        <label>Цветовой спектр</label>
-                        <select id="colorFilter">
-                            <option value="">Все спектры</option>
-                            <option value="Милка-Фиолетовый">Милка-Фиолетовый</option>
-                            <option value="Угольно-Чёрный">Угольно-Чёрный</option>
-                        </select>
-                    </div>
-                    <button id="resetFiltersBtn" class="reset-btn">Сбросить координаты</button>
-                </aside>
-
-                <div class="products-grid-wrapper">
-                    <div class="products-grid" id="productsGrid"></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-product-detail" class="screen-view">
-            <div class="detail-container" id="productDetailContent">
-                </div>
-        </section>
-
-        <section id="view-cart" class="screen-view">
-            <div class="cart-layout">
-                <div class="cart-items-container" id="cartItemsList"></div>
-                <div class="cart-summary-panel">
-                    <h3>Орбитальный Счёт</h3>
-                    <div class="summary-row"><span>Товары:</span><span id="cart-summary-items">0 шт.</span></div>
-                    <div class="summary-row total"><span>Итого:</span><span id="cart-summary-total">0 ₽</span></div>
-                    <button class="checkout-btn" data-target="view-checkout">Перейти к оформлению <i class="fas fa-arrow-right"></i></button>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-checkout" class="screen-view">
-            <div class="checkout-container">
-                <div class="checkout-form-panel">
-                    <h2>Оформление гиперпространственного заказа</h2>
-                    <div class="form-group"><label>Координаты доставки (Адрес)</label><input type="text" id="checkout-address" placeholder="Галактика Земля, ул. Лавандовая..."></div>
-                    <div class="form-group"><label>Способ космической оплаты</label>
-                        <div class="payment-mock-grid">
-                            <label class="pay-option"><input type="radio" name="payment" value="quantum" checked> <span>Квантовый крипто-перевод</span></label>
-                            <label class="pay-option"><input type="radio" name="payment" value="stars"> <span>Звездные кредиты</span></label>
-                        </div>
-                    </div>
-                    <button class="confirm-order-btn" id="placeOrderBtn">Подтвердить и запустить сборку</button>
-                </div>
-                <div class="checkout-receipt-panel" id="orderConfirmationScreen" style="display:none;">
-                    <div class="success-icon"><i class="fas fa-check-circle"></i></div>
-                    <h2>Заказ успешно сформирован!</h2>
-                    <p>Млечный путь принял вашу заявку. Код отслеживания: <strong id="generated-order-id">#ST-9942</strong></p>
-                    <button class="cta-btn" data-target="view-catalog">Вернуться в каталог</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-auth" class="screen-view">
-            <div class="auth-glass-card" id="authCard">
-                <div class="auth-icon-wrapper">
-                    <i class="fas fa-circle-notch fa-spin-slow"></i>
-                </div>
-                
-                <div id="auth-login-block">
-                    <h2 class="auth-glass-title">Welcome back!</h2>
-                    <p class="auth-glass-subtitle">Sign in to access your guided meditations, daily practices, and personal journey</p>
-                    
-                    <form id="login-form">
-                        <div class="glass-input-group">
-                            <label>Email</label>
-                            <input type="text" id="login-email" placeholder="Enter your email" required autocomplete="off">
-                        </div>
-                        <div class="glass-input-group">
-                            <label>Password</label>
-                            <div class="password-wrapper">
-                                <input type="password" id="login-pass" placeholder="••••••" required>
-                                <i class="far fa-eye toggle-password"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="glass-form-options">
-                            <label class="glass-checkbox-label">
-                                <input type="checkbox" checked>
-                                <span>Remember me</span>
-                            </label>
-                            <a href="#" class="glass-link">Forgot password?</a>
-                        </div>
-                        
-                        <button type="submit" class="glass-submit-btn">Log In</button>
-                    </form>
-                    
-                    <div class="glass-divider"><span>Or</span></div>
-                    
-                    <button class="glass-oauth-btn">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google">
-                        Sign In with Google
-                    </button>
-                    
-                    <p class="glass-footer-text">Don't have an account? <a href="#" id="goToRegisterBtn">Sign Up</a></p>
-                </div>
-
-                <div id="auth-register-block" style="display: none;">
-                    <h2 class="auth-glass-title">Create account</h2>
-                    <p class="auth-glass-subtitle">Join the Milka.universe and explore the cosmic collection</p>
-                    
-                    <form id="register-form">
-                        <div class="glass-input-group">
-                            <label>Email Address</label>
-                            <input type="email" placeholder="Enter your email" required autocomplete="off">
-                        </div>
-                        <div class="glass-input-group">
-                            <label>Create Password</label>
-                            <input type="password" placeholder="Minimum 6 characters" required>
-                        </div>
-                        <button type="submit" class="glass-submit-btn">Sign Up</button>
-                    </form>
-                    
-                    <p class="glass-footer-text">Already have an astronaut pass? <a href="#" id="goToLoginBtn">Log In</a></p>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-admin" class="screen-view">
-            <div class="admin-layout">
-                <header class="admin-header"><h2>Панель Архитектора Галактики (Администратор)</h2></header>
-                <div class="admin-grid">
-                    <div class="admin-card">
-                        <h3>Управление Сверхновыми (Товары)</h3>
-                        <table class="admin-table">
-                            <thead><tr><th>ID</th><th>Название</th><th>Цена</th><th>Действия</th></tr></thead>
-                            <tbody><tr><td>3</td><td>Оверсайз Худи Milka Classic</td><td>4500 ₽</td><td><i class="fas fa-edit"></i> <i class="fas fa-trash-alt"></i></td></tr></tbody>
-                        </table>
-                    </div>
-                    <div class="admin-card">
-                        <h3>Сводка Космических Заказов</h3>
-                        <div id="admin-orders-list"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="view-seller" class="screen-view">
-            <div class="admin-layout">
-                <header class="admin-header"><h2>Центр Комплектации Звездного Инвентаря (Сборщик)</h2></header>
-                <div class="seller-orders-grid" id="sellerOrdersGrid"></div>
-            </div>
-        </section>
-
-        <section id="view-delivery" class="screen-view">
-            <div class="admin-layout">
-                <header class="admin-header"><h2>Навигатор Межзвездных Курьеров (Доставщик)</h2></header>
-                <div class="courier-container" id="courierDeliveries"></div>
-            </div>
-        </section>
-
-        <section id="view-accountant" class="screen-view">
-            <div class="admin-layout">
-                <header class="admin-header"><h2>Финансовый Департамент Млечного Пути (Бухгалтер)</h2></header>
-                <div class="admin-grid">
-                    <div class="admin-card" style="grid-column: 1 / -1;">
-                        <h3>Баланс Квантовых Кредитов и Налоги</h3>
-                        <div style="font-size: 32px; color: var(--neon-cyan); margin: 20px 0; font-weight: 800;">7,420,000 ₽</div>
-                        <table class="admin-table">
-                            <thead><tr><th>Период</th><th>Оборот галактики</th><th>Чистая прибыль</th><th>Статус отчета</th></tr></thead>
-                            <tbody>
-                                <tr><td>Май 2026</td><td>4,500,000 ₽</td><td>3,100,000 ₽</td><td><span class="status-badge delivery">Сдан</span></td></tr>
-                                <tr><td>Апрель 2026</td><td>3,800,000 ₽</td><td>2,450,000 ₽</td><td><span class="status-badge delivery">Сдан</span></td></tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <script src="app.js"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>MILKA.universe | Космический Стиль</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <div class="space-bg" id="cosmicBg"></div>
+    <div id="toast-container"></div>
 
-    <header class="navbar">
-        <div class="logo" data-target="view-home">MILKA<span>.universe</span></div>
-        <div class="nav-right-block">
-            <div class="promo-badge">Первый заказ: -500 ₽ 🎁</div>
-            <nav class="nav-links">
-                <a href="#" class="nav-link-item" data-target="view-home">Главная</a>
-                <a href="#" class="nav-link-item" data-target="view-catalog">Каталог</a>
-                <a href="#" class="nav-link-item" data-target="view-cart">Корзина <span id="cart-count">0</span></a>
-                <a href="#" class="nav-link-item" data-target="view-auth" id="userBtn">Вход</a>
-            </nav>
+    <div class="top-promo-bar">
+        <span><i class="fas fa-space-shuttle"></i> БЕСПЛАТНАЯ ДОСТАВКА ПО ВСЕЙ ГАЛАКТИКЕ ПРИ ЗАКАЗЕ ОТ 15 000 ₽</span>
+    </div>
+
+    <header class="navbar" id="main-nav">
+        <div class="nav-left">
+            <a href="#" class="nav-link main-cat-link" data-category="Женское">Женское</a>
+            <a href="#" class="nav-link main-cat-link" data-category="Мужское">Мужское</a>
+            <a href="#" class="nav-link main-cat-link" data-category="Детское">Детское</a>
+            <a href="#" class="nav-link main-cat-link" data-category="Аксессуары">Аксессуары</a>
+        </div>
+
+        <div class="logo-container" data-target="view-home">
+            <svg class="black-hole-logo" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="18" fill="#05050A" stroke="#f8f9fa" stroke-width="1.5"/>
+                <ellipse cx="50" cy="50" rx="45" ry="7" fill="none" stroke="#a0aab2" stroke-width="1.2" transform="rotate(35 50 50)"/>
+                <ellipse cx="50" cy="50" rx="38" ry="5" fill="none" stroke="#f8f9fa" stroke-width="0.7" transform="rotate(-15 50 50)"/>
+                <circle cx="25" cy="25" r="1" fill="#fff"/>
+                <circle cx="75" cy="75" r="1" fill="#fff"/>
+            </svg>
+            <div class="logo-text">MILKA<span>.universe</span></div>
+        </div>
+
+        <div class="nav-right">
+            <div class="search-wrapper" id="search-block">
+                <input type="text" id="search-input" placeholder="Поиск по созвездиям товаров...">
+                <button type="button" class="icon-btn" id="search-trigger-btn"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <div id="auth-state-wrapper">
+                <a href="#" class="icon-link" id="loginBtn" data-target="view-auth"><i class="far fa-user"></i> Вход</a>
+                <div class="user-dropdown" id="userMenuBtn" style="display: none;">
+                    <span id="userNameDisplay">Личный Кабинет ▼</span>
+                    <div class="dropdown-content">
+                        <a href="#" data-target="view-profile"><i class="fas fa-user-astronaut"></i> Мой профиль</a>
+                        <a href="#" data-target="view-admin" id="link-admin" style="display: none;"><i class="fas fa-sliders-h"></i> Управление товарами</a>
+                        <a href="#" data-target="view-picker" id="link-picker" style="display: none;"><i class="fas fa-boxes"></i> Сборка заказов</a>
+                        <a href="#" data-target="view-accountant" id="link-account" style="display: none;"><i class="fas fa-chart-line"></i> Бухгалтерия</a>
+                        <hr>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="#" class="icon-link" id="cartBtn"><i class="fas fa-shopping-bag"></i> (<span id="cart-count">0</span>)</a>
         </div>
     </header>
 
     <main class="app-container">
+
         <section id="view-home" class="screen-view active">
-            <div class="hero-section">
-                <h1 class="hero-title">НЕОТРАЗИМА</h1>
-                <h1 class="hero-title asymmetric">КАК ЗВЕЗДА</h1>
-                <p class="hero-subtitle">Межгалактическая мода с доставкой в твой сектор.</p>
-                <button class="cta-btn" data-target="view-catalog">В КАТАЛОГ</button>
+            <div class="hero-banner">
+                <img src="https://i.pinimg.com/originals/a4/96/c2/a496c2b6bc5d7cfe0e0674f6598c38ad.gif" class="hero-video" alt="Space Deep Space">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <span class="hero-tag">Pre-Fall Collection 2026</span>
+                    <h1 class="hero-title">Гравитация Элегантности</h1>
+                    <p class="hero-subtitle">Одежда, созданная на стыке высокой моды Земли и бесконечности Млечного Пути.</p>
+                    <button class="btn-primary btn-large" id="explore-collection-btn">ОТКРЫТЬ КАТАЛОГ</button>
+                </div>
             </div>
 
-            <div class="home-scroll-content">
-                <h2 class="section-title">Тренды этой туманности</h2>
-                <div class="carousel-container">
-                    <div class="carousel-track" id="trendingItems">
-                        </div>
-                </div>
-
-                <div class="map-section">
-                    <div class="glass-card map-info">
-                        <h3>Наш Штаб</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> Сектор Зеро, ул. Лавандовая 42</p>
-                        <p><i class="fas fa-phone"></i> +7 (999) MILKA-WAY</p>
-                    </div>
-                    <div class="map-placeholder">
-                        <img src="https://googleusercontent.com/map_mockup_space" alt="Карта">
+            <div class="category-showcase-grid">
+                <div class="cat-banner-box asset-women" style="background-image: url('https://images.unsplash.com/photo-1539008835657-9e8e9680c956?auto=format&fit=crop&q=80');">
+                    <div class="box-overlay"></div>
+                    <div class="box-text">
+                        <h2>ЖЕНСКАЯ КОЛЛЕКЦИЯ</h2>
+                        <span class="btn-underline main-cat-link" data-category="Женское">Смотреть всё</span>
                     </div>
                 </div>
+                <div class="cat-banner-box asset-men" style="background-image: url('https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80');">
+                    <div class="box-overlay"></div>
+                    <div class="box-text">
+                        <h2>МУЖСКАЯ КОЛЛЕКЦИЯ</h2>
+                        <span class="btn-underline main-cat-link" data-category="Мужское">Смотреть всё</span>
+                    </div>
+                </div>
+            </div>
 
-                <div class="loyalty-section">
-                    <h2 class="section-title">Система Лояльности "Путь к Звездам"</h2>
-                    <div class="loyalty-grid">
-                        <div class="glass-card loyalty-card">
-                            <i class="fas fa-meteor"></i>
-                            <h4>Комета</h4>
-                            <p>Сумма от 0 ₽</p>
-                            <span>Кэшбек 5%</span>
-                        </div>
-                        <div class="glass-card loyalty-card gold">
-                            <i class="fas fa-ring"></i>
-                            <h4>Планета</h4>
-                            <p>Сумма от 50 000 ₽</p>
-                            <span>Кэшбек 10%</span>
-                        </div>
-                        <div class="glass-card loyalty-card neon">
-                            <i class="fas fa-galaxy"></i>
-                            <h4>Галактика</h4>
-                            <p>Сумма от 150 000 ₽</p>
-                            <span>Кэшбек 15%</span>
+            <div class="carousel-section">
+                <div class="section-title-wrapper">
+                    <hr class="line-decor">
+                    <h2 class="section-heading">Хиты Галактики</h2>
+                    <hr class="line-decor">
+                </div>
+                <p class="section-subtext">Бестселлеры, покорившие орбитальные станции и столицы моды</p>
+                
+                <div class="carousel-outer-container">
+                    <button class="carousel-arrow left" id="slide-left-btn"><i class="fas fa-chevron-left"></i></button>
+                    <div class="product-carousel-track" id="galaxy-hits-container">
+                        <div class="product-card skeleton-card">
+                            <div class="skeleton-img"></div>
+                            <p>Ожидание ваших уникальных фото...</p>
                         </div>
                     </div>
+                    <button class="carousel-arrow right" id="slide-right-btn"><i class="fas fa-chevron-right"></i></button>
                 </div>
             </div>
         </section>
+
+
+        <section id="view-catalog" class="screen-view">
+            <div class="catalog-header-zone">
+                <h2 id="catalog-title-display">Вселенная Одежды</h2>
+                <p id="catalog-subtitle-display">Премиальный крой, технологичные космические материалы</p>
+            </div>
+
+            <div class="filter-dashboard-bar">
+                <div class="filter-group" id="filter-group-clothing">
+                    <div class="filter-select-wrapper">
+                        <label>Размер</label>
+                        <select id="filter-size">
+                            <option value="all">Все размеры</option>
+                            <option value="XS">XS (Orion)</option>
+                            <option value="S">S (Sirius)</option>
+                            <option value="M">M (Vega)</option>
+                            <option value="L">L (Jupiter)</option>
+                            <option value="XL">XL (Titan)</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-select-wrapper">
+                        <label>Цвет</label>
+                        <select id="filter-color">
+                            <option value="all">Все спектры</option>
+                            <option value="Deep Space Black">Глубокий черный</option>
+                            <option value="Stardust White">Звездный белый</option>
+                            <option value="Cosmic Ginger">Космический имбирь</option>
+                            <option value="Strawberry Blonde">Клубничный блонд</option>
+                            <option value="Nebula Violet">Фиолетовая туманность</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-select-wrapper">
+                        <label>Тип одежды</label>
+                        <select id="filter-clothing-type">
+                            <option value="all">Любой тип</option>
+                            <option value="Платья">Платья</option>
+                            <option value="Костюмы">Костюмы</option>
+                            <option value="Пальто">Пальто</option>
+                            <option value="Худи">Худи и Свитшоты</option>
+                            <option value="Куртки">Верхняя одежда</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-group" id="filter-group-accessories" style="display: none;">
+                    <div class="filter-select-wrapper">
+                        <label>Материал</label>
+                        <select id="filter-material">
+                            <option value="all">Все материалы</option>
+                            <option value="Метеоритная сталь">Метеоритная сталь</option>
+                            <option value="Углеродное волокно">Углеродное волокно</option>
+                            <option value="Звездное серебро">Звездное серебро 925</option>
+                            <option value="Космический шелк">Космический шелк</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-select-wrapper">
+                        <label>Вид аксессуара</label>
+                        <select id="filter-acc-type">
+                            <option value="all">Все виды</option>
+                            <option value="Очки">Очки затмения</option>
+                            <option value="Часы">Хронографы</option>
+                            <option value="Сумки">Капсульные сумки</option>
+                            <option value="Ремни">Пояса гравитации</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <button class="btn-secondary btn-small" id="reset-filters-btn">Сбросить</button>
+                </div>
+            </div>
+
+            <div class="product-grid-container">
+                <div class="product-grid" id="catalog-products-grid">
+                    </div>
+                <div id="catalog-empty-msg" style="display: none;" class="empty-state">
+                    <i class="fas fa-search-minus"></i> Совпадений в данной области космоса не обнаружено.
+                </div>
+            </div>
+        </section>
+
 
         <section id="view-auth" class="screen-view">
-            <div class="auth-glass-card">
-                <div id="auth-login-block">
-                    <h2>С возвращением!</h2>
-                    <form id="loginForm">
-                        <input type="email" placeholder="Email" required>
-                        <input type="password" placeholder="Пароль" required>
-                        <button type="submit" class="glass-submit-btn">Войти</button>
-                    </form>
-                    <p class="glass-footer">Нет аккаунта? <a href="#" id="toReg">Зарегистрироваться</a></p>
+            <div class="auth-split-layout">
+                <div class="auth-brand-side">
+                    <img src="https://images.unsplash.com/photo-1447433589675-4aaa569f3e05?auto=format&fit=crop&q=80" alt="Nebula Fashion">
+                    <div class="brand-quote-box">
+                        <p class="quote-text">"Мода не просто существует в платьях. Мода в небе, на улицах, она связана с идеями, с тем, как мы живем."</p>
+                        <span class="quote-author">— Космическая философия бренда</span>
+                    </div>
                 </div>
 
-                <div id="auth-reg-block" style="display:none;">
-                    <h2>Регистрация Астронавта</h2>
-                    <form id="regForm">
-                        <div class="grid-inputs">
-                            <input type="text" id="reg-fn" placeholder="Имя" required>
-                            <input type="text" id="reg-ln" placeholder="Фамилия" required>
+                <div class="auth-forms-side">
+                    <div class="auth-card-box" id="box-login">
+                        <h2 class="auth-title">Вход в Профиль</h2>
+                        <p class="auth-subtitle">Пожалуйста, авторизуйтесь для доступа к вашим заказам.</p>
+                        
+                        <form id="form-login-gate" class="elegant-form">
+                            <div class="floating-input-group">
+                                <label>Электронный адрес *</label>
+                                <input type="email" id="gate-login-email" required autocomplete="username">
+                            </div>
+                            <div class="floating-input-group">
+                                <label>Пароль *</label>
+                                <input type="password" id="gate-login-password" required autocomplete="current-password">
+                            </div>
+                            <div class="form-helpers">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" checked> Запомнить меня
+                                </label>
+                                <a href="#" class="forgot-pass-link">Забыли пароль?</a>
+                            </div>
+                            <button type="submit" class="btn-primary full-width" id="submit-login-btn">ВОЙТИ В АККАУНТ</button>
+                        </form>
+                        <div class="auth-toggle-footer">
+                            Впервые у нас? <a href="#" id="go-to-reg-btn">Создать учетную запись</a>
                         </div>
-                        <input type="email" id="reg-email" placeholder="Электронная почта" required>
-                        <input type="tel" id="reg-phone" placeholder="Номер телефона">
-                        <input type="password" id="reg-pass" placeholder="Придумайте пароль" required>
-                        <button type="submit" class="glass-submit-btn">Создать профиль</button>
-                    </form>
-                    <p class="glass-footer">Уже есть скафандр? <a href="#" id="toLog">Войти</a></p>
+                    </div>
+
+                    <div class="auth-card-box" id="box-register" style="display: none;">
+                        <h2 class="auth-title">Регистрация Личности</h2>
+                        <p class="auth-subtitle">Создайте аккаунт для накопления миль лояльности.</p>
+                        
+                        <form id="form-register-gate" class="elegant-form">
+                            <div class="form-row-twin">
+                                <div class="floating-input-group">
+                                    <label>Имя *</label>
+                                    <input type="text" id="gate-reg-firstname" required>
+                                </div>
+                                <div class="floating-input-group">
+                                    <label>Фамилия *</label>
+                                    <input type="text" id="gate-reg-lastname" required>
+                                </div>
+                            </div>
+                            <div class="floating-input-group">
+                                <label>Электронная почта *</label>
+                                <input type="email" id="gate-reg-email" required autocomplete="email">
+                            </div>
+                            <div class="floating-input-group">
+                                <label>Номер телефона</label>
+                                <input type="tel" id="gate-reg-phone" placeholder="+7 (___) ___-__-__">
+                            </div>
+                            <div class="floating-input-group">
+                                <label>Придумайте пароль *</label>
+                                <input type="password" id="gate-reg-password" required autocomplete="new-password">
+                            </div>
+                            
+                            <div class="floating-input-group">
+                                <label>Назначить роль системы (Для тестирования)</label>
+                                <select id="gate-reg-role">
+                                    <option value="Customer">Покупатель (Customer)</option>
+                                    <option value="Admin">Администратор (Admin)</option>
+                                    <option value="Picker">Сборщик заказов (Picker)</option>
+                                    <option value="Accountant">Бухгалтер (Accountant)</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn-secondary full-width" id="submit-reg-btn">ПОДТВЕРДИТЬ РЕГИСТРАЦИЮ</button>
+                        </form>
+                        <div class="auth-toggle-footer">
+                            Уже есть аккаунт? <a href="#" id="go-to-login-btn">Вернуться ко входу</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
+
+
+        <section id="view-profile" class="screen-view">
+            <div class="dashboard-root-container">
+                <h2 class="dashboard-main-title">Личная Станция Управления</h2>
+                
+                <div class="profile-workspace-layout">
+                    <div class="profile-card-sidebar">
+                        <div class="avatar-circle-wrapper">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                        <h3 id="profile-full-name">Александра Космос</h3>
+                        <p id="profile-email-label">alexandra@milka.space</p>
+                        <span class="user-role-badge">Покупатель</span>
+                        
+                        <div class="profile-quick-nav">
+                            <button class="p-nav-item active"><i class="fas fa-shopping-bag"></i> Мои Покупки</button>
+                            <button class="p-nav-item" id="btn-logout-inside"><i class="fas fa-sign-out-alt"></i> Выйти из системы</button>
+                        </div>
+                    </div>
+
+                    <div class="profile-main-content-area">
+                        <div class="premium-loyalty-card">
+                            <div class="loyalty-inner-glowing"></div>
+                            <div class="loyalty-top">
+                                <h4>MILKA UNIVERSE EXCLUSIVE</h4>
+                                <i class="fas fa-infinity icon-card-logo"></i>
+                            </div>
+                            <div class="loyalty-middle-code">
+                                <span>4815 1623 4296 0108</span>
+                            </div>
+                            <div class="loyalty-bottom-info">
+                                <div class="info-block">
+                                    <span class="lbl">Ранг лояльности</span>
+                                    <span class="val" id="loyalty-status-txt">Андромеда Премиум</span>
+                                </div>
+                                <div class="info-block">
+                                    <span class="lbl">Звездный Баланс</span>
+                                    <span class="val" id="loyalty-balance-txt">24 500 тыс. ₽</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass-table-panel">
+                            <h3><i class="fas fa-history"></i> Журнал Транзакций и Покупок</h3>
+                            <div class="table-scroll-container">
+                                <table class="luxury-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Номер Сектора</th>
+                                            <th>Дата</th>
+                                            <th>Название товаров</th>
+                                            <th>Статус Маршрута</th>
+                                            <th>Сумма</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="customer-orders-history">
+                                        <tr>
+                                            <td>#TR-8841</td>
+                                            <td>14.05.2026</td>
+                                            <td>Шелковое платье "Сириус" (M)</td>
+                                            <td><span class="status-pill delivered">Доставлено</span></td>
+                                            <td>18 500 ₽</td>
+                                        </tr>
+                                        <tr>
+                                            <td>#TR-9012</td>
+                                            <td>19.05.2026</td>
+                                            <td>Кашемировый бомбер "Орбита" (L)</td>
+                                            <td><span class="status-pill processing">В сборке</span></td>
+                                            <td>32 000 ₽</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="view-admin" class="screen-view">
+            <div class="dashboard-root-container">
+                <h2 class="dashboard-main-title">Портал Администратора: Управление Продукцией</h2>
+                <p class="dashboard-subtitle">Добавление, удаление и сортировка по четырем ключевым отсекам магазина.</p>
+
+                <div class="admin-workspace-grid">
+                    <div class="glass-form-panel">
+                        <h3><i class="fas fa-plus-circle"></i> Интегрировать новый товар</h3>
+                        <form id="admin-add-product-form" class="elegant-form">
+                            <div class="floating-input-group">
+                                <label>Название Изделия *</label>
+                                <input type="text" id="admin-p-name" required placeholder="Например: Сверхновый Костюм">
+                            </div>
+                            
+                            <div class="form-row-twin">
+                                <div class="floating-input-group">
+                                    <label>Цена (₽) *</label>
+                                    <input type="number" id="admin-p-price" required placeholder="Значение в рублях">
+                                </div>
+                                <div class="floating-input-group">
+                                    <label>Отсек каталога *</label>
+                                    <select id="admin-p-category" required>
+                                        <option value="Женское">Женское</option>
+                                        <option value="Мужское">Мужское</option>
+                                        <option value="Детское">Детское</option>
+                                        <option value="Аксессуары">Аксессуары</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-row-twin">
+                                <div class="floating-input-group">
+                                    <label>Цветовой маркер</label>
+                                    <input type="text" id="admin-p-color" placeholder="Например: Deep Space Black">
+                                </div>
+                                <div class="floating-input-group">
+                                    <label>Размерный ряд / Материал</label>
+                                    <input type="text" id="admin-p-meta" placeholder="M, L, XL или Серебро">
+                                </div>
+                            </div>
+
+                            <div class="floating-input-group">
+                                <label>Текстовое описание товара</label>
+                                <textarea id="admin-p-desc" rows="3" placeholder="Опишите свойства ткани, кроя или дизайна..."></textarea>
+                            </div>
+
+                            <div class="floating-input-group">
+                                <label>Ссылка на медиа-файл (Изображение/Гиф)</label>
+                                <input type="url" id="admin-p-image" placeholder="https://example.com/photo.jpg">
+                            </div>
+
+                            <button type="submit" class="btn-primary full-width">ВНЕСТИ В БАЗУ ДАННЫХ</button>
+                        </form>
+                    </div>
+
+                    <div class="glass-table-panel">
+                        <h3><i class="fas fa-boxes"></i> Текущая номенклатура (Удаление из разделов)</h3>
+                        <div class="table-scroll-container admin-table-height">
+                            <table class="luxury-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Название</th>
+                                        <th>Отсек</th>
+                                        <th>Цена</th>
+                                        <th>Операция</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-catalog-table-body">
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="view-picker" class="screen-view">
+            <div class="dashboard-root-container">
+                <h2 class="dashboard-main-title">Монитор Сборщика Заказов</h2>
+                <p class="dashboard-subtitle">Проверка комплектации, сверка номенклатуры и оперативное управление статусами.</p>
+
+                <div class="picker-orders-grid" id="picker-orders-cards-container">
+                    <div class="order-fulfillment-card">
+                        <div class="card-status-header header-processing">
+                            <span>Заказ #ORD-4402</span>
+                            <strong>В процессе</strong>
+                        </div>
+                        <div class="card-body-details">
+                            <p class="picker-item-row"><i class="fas fa-tshirt"></i> Космический Свитшот (Детское) x1</p>
+                            <p class="picker-item-row"><i class="fas fa-ring"></i> Часы Затмения (Аксессуары) x1</p>
+                            <hr class="card-divider">
+                            <p class="customer-note"><strong>Заметка:</strong> Проверить прочность застежки.</p>
+                        </div>
+                        <div class="card-action-footer">
+                            <button class="btn-picker-status approve-btn"><i class="fas fa-check"></i> СОБРАН</button>
+                            <button class="btn-picker-status reject-btn"><i class="fas fa-times"></i> НЕТ В НАЛИЧИИ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
 
         <section id="view-accountant" class="screen-view">
-            <div class="admin-layout">
-                <h2>Финансовый отчет туманности</h2>
-                <div class="stats-grid">
-                    <div class="glass-card">
-                        <canvas id="profitChart"></canvas>
+            <div class="dashboard-root-container">
+                <h2 class="dashboard-main-title">Финансово-Аналитический Департамент</h2>
+                <p class="dashboard-subtitle">Все показатели строго масштабированы в тысячах рублей. Реальный балансовый учёт.</p>
+
+                <div class="accountant-dashboard-grid">
+                    <div class="glass-panel chart-wrapper-box">
+                        <h3><i class="fas fa-chart-pie"></i> Круговое Распределение Прибыли и Расходов</h3>
+                        <div class="chart-canvas-container">
+                            <canvas id="financeDistributionChart"></canvas>
+                        </div>
                     </div>
-                    <div class="glass-card">
-                        <h4>Расходы на экипаж</h4>
-                        <ul id="salaryList"></ul>
-                        <button class="panel-btn" onclick="addSalary()">+ Добавить выплату</button>
+
+                    <div class="glass-panel balance-ledger-box">
+                        <h3><i class="fas fa-book-open"></i> Ведомость Сальдо (в тыс. ₽)</h3>
+                        <ul class="ledger-financial-lines">
+                            <li>
+                                <span class="ledger-label">Оборотная выручка (Gross)</span>
+                                <span class="ledger-value value-positive">+ 1 450.00</span>
+                            </li>
+                            <li>
+                                <span class="ledger-label">Налоговые отчисления (13%)</span>
+                                <span class="ledger-value value-negative">- 188.50</span>
+                            </li>
+                            <li>
+                                <span class="ledger-label">Межгалактическая логистика</span>
+                                <span class="ledger-value value-negative">- 120.00</span>
+                            </li>
+                            <li>
+                                <span class="ledger-label">Фонд оплаты труда (ФОТ)</span>
+                                <span class="ledger-value value-negative">- 350.00</span>
+                            </li>
+                            <li>
+                                <span class="ledger-label">Амортизация оборудования станций</span>
+                                <span class="ledger-value value-negative">- 92.00</span>
+                            </li>
+                            <li class="ledger-final-row">
+                                <span class="ledger-label">Чистая прибыль (Net Income)</span>
+                                <span class="ledger-value value-total" id="net-profit-sum-display">799.50 тыс. ₽</span>
+                            </li>
+                        </ul>
+                        <div class="ledger-sync-notice">
+                            <i class="fas fa-sync-alt"></i> Расчеты синхронизированы со всеми пятью ролями системы.
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
+
     </main>
+
+    <footer class="luxury-footer">
+        <div class="footer-upper-grid">
+            <div class="footer-column-brand">
+                <h3>MILKA.universe</h3>
+                <p class="brand-manifesto">Мы не создаем моду, мы создаем новые константы стиля во вселенной.</p>
+            </div>
+            <div class="footer-column-links">
+                <h4>Навигация по Орбите</h4>
+                <a href="#" class="main-cat-link" data-category="Женское">Женские Коллекции</a>
+                <a href="#" class="main-cat-link" data-category="Мужское">Мужские Коллекции</a>
+                <a href="#" class="main-cat-link" data-category="Детское">Детские Линейки</a>
+                <a href="#" class="main-cat-link" data-category="Аксессуары">Аксессуары Земля/Космос</a>
+            </div>
+            <div class="footer-column-contacts">
+                <h4>Служба Поддержки Экипажа</h4>
+                <p><i class="fas fa-phone-alt"></i> 8 (800) 555-35-35 (Линия Земли)</p>
+                <p><i class="far fa-envelope"></i> concierge@milka.universe</p>
+                <p><i class="fas fa-map-marker-alt"></i> Терминал 4, Сектор Млечный Путь</p>
+            </div>
+        </div>
+        <div class="footer-bottom-copyright">
+            <p>© 2026 MILKA.universe. Все права защищены. Разработано Tech Lead команды.</p>
+        </div>
+    </footer>
 
     <script src="app.js"></script>
 </body>
